@@ -1,12 +1,22 @@
 require("dotenv").config();
 const express = require("express");
-
-const PORT = process.env.PORT;
+bodyParser = require("body-parser");
 
 const app = express();
 
-app.get("/", function (req, res) {
-  res.send("Hello World");
-});
+const authRoute = require("./routes/auth");
+const { User } = require("./models");
 
-app.listen(PORT);
+const PORT = process.env.PORT;
+
+//common middleware
+app.use(bodyParser.json());
+
+//specific routes
+app.use("/auth", authRoute);
+
+app.listen(PORT, async () => {
+  // await User.sync({ alter: true });
+
+  console.log("app listen at port 3000");
+});
