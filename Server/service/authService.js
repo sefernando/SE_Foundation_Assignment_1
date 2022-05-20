@@ -3,6 +3,9 @@ const bcryptjs = require("bcryptjs");
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
 
+const privateKey = process.env.TOKEN_SECRET;
+const options = { expiresIn: process.env.TOKEN_EXPIRE };
+
 //signup ---------------------------------------------------------------------
 async function signUp(req, res) {
   const saltRounds = 10;
@@ -46,8 +49,6 @@ async function signUp(req, res) {
 
   //creating jwt token
   const payLoad = { userName: user.userName, id: user.id };
-  const privateKey = process.env.TOKEN_SECRET;
-  const options = { expiresIn: process.env.TOKEN_EXPIRE };
 
   jwt.sign(payLoad, privateKey, options, (err, token) => {
     if (err) {
@@ -61,5 +62,31 @@ async function signUp(req, res) {
 }
 
 //signin ---------------------------------------------------------------------
+async function signIn(req, res) {
+  //checking the existing user
+  const user = await User.findOne({ where: { username: req.body.userName } });
+  if (!user) {
+    return res.status(400).json({ errors: [{ msg: "invalid credentials" }] });
+  }
 
-module.exports = { signUp };
+  //checking the password
+  const isMatch = await bcryptjs.compare(req.body.password, user.password);
+  if (!isMatch) {
+    return res.status(400).json({ errors: [{ msg: "invalid credentials" }] });
+  }
+
+  //creating and sending jwt token
+  const payLoad = { userName: user.userName, id: user.id };
+
+  jwt.sign(payLoad, privateKey, options, (err, token) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ errors: [{ msg: "error occured when creating jwt token" }] });
+    } else {
+      return res.json({ token });
+    }
+  });
+}
+
+module.exports = { signUp, signIn };
