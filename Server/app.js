@@ -9,7 +9,7 @@ const { User } = require("./models");
 
 const PORT = process.env.PORT;
 
-//common middleware
+//global middleware
 app.use(bodyParser.json());
 
 //specific routes
