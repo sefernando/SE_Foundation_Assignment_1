@@ -4,7 +4,7 @@ bodyParser = require("body-parser");
 
 const app = express();
 
-const authRoute = require("./routes/auth");
+const authRoute = require("./routes/authRoute");
 const { User } = require("./models");
 
 const PORT = process.env.PORT;
@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 //specific routes
 app.use("/auth", authRoute);
 
+//server
 app.listen(PORT, async () => {
   // await User.sync({ alter: true });
 
