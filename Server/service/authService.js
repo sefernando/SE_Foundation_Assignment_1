@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const privateKey = process.env.TOKEN_SECRET;
 const options = { expiresIn: process.env.TOKEN_EXPIRE };
 
+/////////////////////////////////////////////////////////////////////////////
 //signup ---------------------------------------------------------------------
 async function signUp(req, res) {
   const saltRounds = 10;
@@ -15,12 +16,12 @@ async function signUp(req, res) {
   //check if the user already exist
   // const userByEmail = await User.findOne({ where: { email: req.body.email } });
   // const userByUserName = await User.findOne({
-  //   where: { userName: req.body.userName },
+  //   where: { user_name: req.body.userName },
   // });
 
   const existingUser = await User.findOne({
     where: {
-      [Op.or]: [{ email: req.body.email }, { userName: req.body.userName }],
+      [Op.or]: [{ email: req.body.email }, { user_name: req.body.userName }],
     },
   });
 
@@ -37,7 +38,7 @@ async function signUp(req, res) {
   //saving user to DB
   if (hashPassword) {
     user = await User.create({
-      userName: req.body.userName,
+      user_name: req.body.userName,
       email: req.body.email,
       password: hashPassword,
     });
@@ -48,23 +49,24 @@ async function signUp(req, res) {
   }
 
   //creating jwt token
-  const payLoad = { userName: user.userName, id: user.id };
+  const payLoad = { userName: user.user_name, id: user.id };
 
   jwt.sign(payLoad, privateKey, options, (err, token) => {
     if (err) {
       return res
         .status(500)
-        .json({ errors: [{ msg: "error occured when creating jwt token" }] });
+        .json({ errors: [{ msg: "error occured while creating jwt token" }] });
     } else {
       return res.json({ token });
     }
   });
 }
 
+/////////////////////////////////////////////////////////////////////////////
 //signin ---------------------------------------------------------------------
 async function signIn(req, res) {
   //checking the existing user
-  const user = await User.findOne({ where: { username: req.body.userName } });
+  const user = await User.findOne({ where: { user_name: req.body.userName } });
   if (!user) {
     return res.status(400).json({ errors: [{ msg: "invalid credentials" }] });
   }
@@ -76,13 +78,13 @@ async function signIn(req, res) {
   }
 
   //creating and sending jwt token
-  const payLoad = { userName: user.userName, id: user.id };
+  const payLoad = { userName: user.user_name, id: user.id };
 
   jwt.sign(payLoad, privateKey, options, (err, token) => {
     if (err) {
       return res
         .status(500)
-        .json({ errors: [{ msg: "error occured when creating jwt token" }] });
+        .json({ errors: [{ msg: "error occured while creating jwt token" }] });
     } else {
       return res.json({ token });
     }
