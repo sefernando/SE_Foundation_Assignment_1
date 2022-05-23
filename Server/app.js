@@ -19,6 +19,6 @@ app.use("/auth", authRoute);
 //server
 app.listen(PORT, async () => {
   // await User.sync({ alter: true });
-  //await sequelize.sync({ alter: true });
-  console.log("app listen at port 3000");
+  // await sequelize.sync({ alter: true });
+  console.log("app listen at port 5000");
 });

@@ -12,13 +12,6 @@ const signupValidation = [
   ),
 ];
 
-const signinValidation = [
-  check("userName").isLength({ min: 4 }),
-  check("password").matches(
-    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/
-  ),
-];
-
 //validate inputs
 function validateInputs(req, res, next) {
   const errors = validationResult(req);
@@ -30,6 +23,6 @@ function validateInputs(req, res, next) {
 
 // routes--------------------------------------------------------
 router.post("/signup", signupValidation, validateInputs, signUp);
-router.post("/signin", signinValidation, validateInputs, signIn);
+router.post("/signin", signIn);
 
 module.exports = router;
