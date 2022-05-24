@@ -86,7 +86,7 @@ async function signIn(req, res) {
         .status(500)
         .json({ errors: [{ msg: "error occured while creating jwt token" }] });
     } else {
-      return res.json({ token });
+      return res.json({ token, userName: user.user_name, role: user.role });
     }
   });
 }

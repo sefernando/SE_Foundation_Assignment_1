@@ -20,6 +20,7 @@ const Home = () => {
     setErrMsg("");
   }, [userName, password]);
 
+  //handle submit function
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -32,10 +33,21 @@ const Home = () => {
           withCredentials: true,
         }
       );
-      console.log(JSON.stringify(JSON.stringify(response?.data?.token)));
+      console.log(JSON.stringify(response.data));
+      const token = response?.data?.token;
+      const role = response?.data?.role;
+
+      setAuth({ userName, token, role });
       setUserName("");
       setPassword("");
-    } catch (error) {}
+    } catch (error) {
+      if (!error.response) {
+        setErrMsg("No server response");
+      } else {
+        setErrMsg("Login failed");
+      }
+      errRef.current.focus();
+    }
   };
 
   return (
@@ -50,6 +62,7 @@ const Home = () => {
           type="text"
           id="username"
           ref={userRef}
+          autoComplete="off"
           onChange={(e) => setUserName(e.target.value)}
           value={userName}
           required
