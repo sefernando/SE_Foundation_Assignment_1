@@ -1,4 +1,5 @@
 require("dotenv").config();
+var cors = require("cors");
 
 const express = require("express");
 bodyParser = require("body-parser");
@@ -11,6 +12,12 @@ const { sequelize, User } = require("./models");
 const PORT = process.env.PORT;
 
 //global middleware
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(bodyParser.json());
 
 //specific routes

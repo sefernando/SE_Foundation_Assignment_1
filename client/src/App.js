@@ -1,7 +1,7 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import HOME from "./pages/Home";
-import ABOUT from "./pages/About";
+import ADMIN from "./pages/Admin";
 import ErrorPage from "./pages/ErrorPage";
 
 function App() {
@@ -9,11 +9,11 @@ function App() {
     <Router>
       <nav>
         <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
+        <Link to="/admin">Admin</Link>
       </nav>
       <Routes>
         <Route path="/" element={<HOME />} />
-        <Route path="/about" element={<ABOUT />} />
+        <Route path="/admin" element={<ADMIN />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </Router>
