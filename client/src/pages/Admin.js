@@ -1,7 +1,11 @@
-import React from "react";
+import Register from "../components/Register";
 
 const Admin = () => {
-  return <div>Admin</div>;
+  return (
+    <>
+      <Register />
+    </>
+  );
 };
 
 export default Admin;

@@ -5,7 +5,7 @@ import axios from "../api/axios";
 const Home = () => {
   const { setAuth } = useContext(AuthContext);
   const userRef = useRef();
-  const errRef = useRef();
+  // const errRef = useRef();
 
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -33,10 +33,9 @@ const Home = () => {
           withCredentials: true,
         }
       );
-      console.log(JSON.stringify(response.data));
+      // console.log(JSON.stringify(response.data));
       const token = response?.data?.token;
       const role = response?.data?.role;
-
       setAuth({ userName, token, role });
       setUserName("");
       setPassword("");
@@ -46,35 +45,38 @@ const Home = () => {
       } else {
         setErrMsg("Login failed");
       }
-      errRef.current.focus();
+      // errRef.current.focus();
     }
   };
 
   return (
     <section>
-      <p ref={errRef} className="errMsg">
-        {errMsg}
-      </p>
+      <p className="errMsg">{errMsg}</p>
       <h2>Sign In</h2>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="username">User Name</label>
-        <input
-          type="text"
-          id="username"
-          ref={userRef}
-          autoComplete="off"
-          onChange={(e) => setUserName(e.target.value)}
-          value={userName}
-          required
-        ></input>
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          required
-        ></input>
+        <div>
+          <label htmlFor="username">User Name</label>
+          <input
+            type="text"
+            id="username"
+            ref={userRef}
+            autoComplete="off"
+            onChange={(e) => setUserName(e.target.value)}
+            value={userName}
+            required
+          ></input>
+        </div>
+
+        <div>
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            required
+          ></input>
+        </div>
         <button>Submit</button>
       </form>
     </section>

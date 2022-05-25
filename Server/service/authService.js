@@ -28,7 +28,7 @@ async function signUp(req, res) {
   // if (userByEmail !== null || userByUserName !== null)
   if (existingUser !== null) {
     return res
-      .status(400)
+      .status(409)
       .json({ errors: [{ msg: "user is already registered" }] });
   }
 
@@ -41,6 +41,7 @@ async function signUp(req, res) {
       user_name: req.body.userName,
       email: req.body.email,
       password: hashPassword,
+      role: req.body.role,
     });
   } else {
     return res
@@ -91,4 +92,18 @@ async function signIn(req, res) {
   });
 }
 
-module.exports = { signUp, signIn };
+/////////////////////////////////////////////////////////////////////////////
+//check user name-----------------------------------------------------------
+
+async function checkUserName(req, res) {
+  const user = await User.findOne({
+    where: { user_name: req.params.userName },
+  });
+  if (user) {
+    return res.status(200).json({ user: user.user_name });
+  } else {
+    return res.status(200).json({ user: null });
+  }
+}
+
+module.exports = { signUp, signIn, checkUserName };

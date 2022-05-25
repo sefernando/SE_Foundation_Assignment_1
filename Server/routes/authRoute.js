@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { signUp, signIn } = require("../service/authService");
+const { signUp, signIn, checkUserName } = require("../service/authService");
 const { check, validationResult } = require("express-validator");
 
 //request input validation patterns
@@ -24,5 +24,6 @@ function validateInputs(req, res, next) {
 // routes--------------------------------------------------------
 router.post("/signup", signupValidation, validateInputs, signUp);
 router.post("/signin", signIn);
+router.get("/checkUserName/:userName", checkUserName);
 
 module.exports = router;
