@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthProvider";
 import axios from "../api/axios";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   const { setAuth } = useContext(AuthContext);
   const userRef = useRef();
   // const errRef = useRef();
@@ -36,9 +39,12 @@ const Home = () => {
       // console.log(JSON.stringify(response.data));
       const token = response?.data?.token;
       const role = response?.data?.role;
-      setAuth({ userName, token, role });
+      setAuth({ userName, token, role, isAuthorized: true });
       setUserName("");
       setPassword("");
+      // console.log("token: ", response?.data?.token);
+      // console.log("role: ", response?.data?.role);
+      navigate("/Admin");
     } catch (error) {
       if (!error.response) {
         setErrMsg("No server response");
