@@ -106,4 +106,97 @@ async function checkUserName(req, res) {
   }
 }
 
-module.exports = { signUp, signIn, checkUserName };
+//function to update the database
+// async function updateDatabase(req, res, data) {
+//   try {
+//     const updatedUser = await User.update(
+//       { email: "new one" },
+//       {
+//         where: { user_name: userName },
+//       }
+//     );
+
+//     if (updatedUser[0] === 0) {
+//       res.status(500).json({ errors: [{ msg: "user not found" }] });
+//     } else {
+//       res.status(200).json(updatedUser);
+//     }
+//   } catch (error) {
+//     res.status(500).json({ errors: [{ msg: "server error" }] });
+//   }
+// }
+
+/////////////////////////////////////////////////////////////////////////////
+//change credentials --------------------------------------------------------
+async function changeCredentials(req, res) {
+  const saltRounds = 10;
+  let hashPassword;
+  const { userName, password, email } = req.body;
+
+  //hashing password
+  if (password) {
+    hashPassword = await bcryptjs.hash(password, saltRounds);
+  }
+
+  // update the email only
+  if (email && !password) {
+    try {
+      const updatedUser = await User.update(
+        { email },
+        {
+          where: { user_name: userName },
+        }
+      );
+
+      if (updatedUser[0] === 0) {
+        res.status(500).json({ errors: [{ msg: "user not found" }] });
+      } else {
+        res.status(200).json(updatedUser);
+      }
+    } catch (error) {
+      res.status(500).json({ errors: [{ msg: "server error" }] });
+    }
+  }
+
+  //update the password only
+  if (!email && password) {
+    try {
+      const updatedUser = await User.update(
+        { password: hashPassword },
+        {
+          where: { user_name: userName },
+        }
+      );
+
+      if (updatedUser[0] === 0) {
+        res.status(500).json({ errors: [{ msg: "user not found" }] });
+      } else {
+        res.status(200).json(updatedUser);
+      }
+    } catch (error) {
+      res.status(500).json({ errors: [{ msg: "server error" }] });
+    }
+  }
+
+  //update both email and password
+  if (email && password) {
+    try {
+      const updatedUser = await User.update(
+        { email, password: hashPassword },
+        {
+          where: { user_name: userName },
+        }
+      );
+
+      if (updatedUser[0] === 0) {
+        res.status(500).json({ errors: [{ msg: "user not found" }] });
+      } else {
+        res.status(200).json(updatedUser);
+      }
+    } catch (error) {
+      res.status(500).json({ errors: [{ msg: "server error" }] });
+    }
+  }
+}
+
+module.exports = { signUp, signIn, checkUserName, changeCredentials };

@@ -44,7 +44,7 @@ const Home = () => {
       setPassword("");
       // console.log("token: ", response?.data?.token);
       // console.log("role: ", response?.data?.role);
-      navigate("/Admin");
+      navigate("/UserManagement");
     } catch (error) {
       if (!error.response) {
         setErrMsg("No server response");
