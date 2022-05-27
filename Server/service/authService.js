@@ -27,9 +27,7 @@ async function signUp(req, res) {
 
   // if (userByEmail !== null || userByUserName !== null)
   if (existingUser !== null) {
-    return res
-      .status(409)
-      .json({ errors: [{ msg: "user is already registered" }] });
+    return res.status(409).json({ error: "User is already registered" });
   }
 
   //hashing password
@@ -44,21 +42,23 @@ async function signUp(req, res) {
       role: req.body.role,
     });
   } else {
-    return res
-      .status(500)
-      .json({ errors: [{ msg: "password hashing error" }] });
+    return res.status(500).json({ error: "password hashing error" });
   }
 
   //creating jwt token
-  const payLoad = { userName: user.user_name, id: user.id };
+  const payLoad = {
+    userName: user.user_name,
+    active: user.isActive,
+    role: user.role,
+  };
 
   jwt.sign(payLoad, privateKey, options, (err, token) => {
     if (err) {
       return res
         .status(500)
-        .json({ errors: [{ msg: "error occured while creating jwt token" }] });
+        .json({ error: "Error occured while creating jwt token" });
     } else {
-      return res.json({ token });
+      return res.status(200).json({ msg: "Successfully registered", token });
     }
   });
 }
@@ -69,32 +69,41 @@ async function signIn(req, res) {
   //checking the existing user
   const user = await User.findOne({ where: { user_name: req.body.userName } });
   if (!user) {
-    return res.status(400).json({ errors: [{ msg: "invalid credentials" }] });
+    return res.status(400).json({ error: "Invalid credentials" });
   }
 
   //checking the password
   const isMatch = await bcryptjs.compare(req.body.password, user.password);
   if (!isMatch) {
-    return res.status(400).json({ errors: [{ msg: "invalid credentials" }] });
+    return res.status(400).json({ error: "Invalid credentials" });
   }
 
   //creating and sending jwt token
-  const payLoad = { userName: user.user_name, id: user.id };
+  const payLoad = {
+    userName: user.user_name,
+    active: user.isActive,
+    role: user.role,
+  };
 
   jwt.sign(payLoad, privateKey, options, (err, token) => {
     if (err) {
       return res
         .status(500)
-        .json({ errors: [{ msg: "error occured while creating jwt token" }] });
+        .json({ error: "Error occured while creating jwt token" });
     } else {
-      return res.json({ token, userName: user.user_name, role: user.role });
+      return res.status(200).json({
+        msg: "Login successfull",
+        token,
+        userName: user.user_name,
+        role: user.role,
+        active: user.isActive,
+      });
     }
   });
 }
 
 /////////////////////////////////////////////////////////////////////////////
 //check user name-----------------------------------------------------------
-
 async function checkUserName(req, res) {
   const user = await User.findOne({
     where: { user_name: req.params.userName },
@@ -111,20 +120,20 @@ async function checkUserName(req, res) {
 async function changePassword(req, res) {
   const saltRounds = 10;
   let hashPassword;
-  const { userName, password, email } = req.body;
+  const { userName, password } = req.body;
 
   const PWD_REGEX =
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/;
 
   if (!PWD_REGEX.test(password)) {
-    return res.status(400).json({ errors: [{ msg: "invalid request" }] });
+    return res.status(400).json({ error: "Invalid credentials" });
   }
 
   //hashing password
   if (password) {
     hashPassword = await bcryptjs.hash(password, saltRounds);
   } else {
-    return res.status(400).json({ errors: [{ msg: "user not found" }] });
+    return res.status(400).json({ error: "User not found" });
   }
 
   //updating database
@@ -137,12 +146,12 @@ async function changePassword(req, res) {
     );
 
     if (updatedUser[0] === 0) {
-      res.status(500).json({ errors: [{ msg: "user not found" }] });
+      res.status(500).json({ error: "User not found" });
     } else {
-      res.status(200).json(updatedUser);
+      res.status(200).json({ msg: "Password updated successfully" });
     }
   } catch (error) {
-    res.status(500).json({ errors: [{ msg: "server error" }] });
+    res.status(500).json({ error: "Server error" });
   }
 }
 
@@ -152,6 +161,7 @@ async function changeEmail(req, res) {
   const { userName, email } = req.body;
 
   try {
+    console.log(userName, email);
     const updatedUser = await User.update(
       { email },
       {
@@ -160,12 +170,13 @@ async function changeEmail(req, res) {
     );
 
     if (updatedUser[0] === 0) {
-      res.status(500).json({ errors: [{ msg: "user not found" }] });
+      res.status(500).json({ error: "user not found" });
     } else {
-      res.status(200).json(updatedUser);
+      res.status(200).json({ msg: "Email updated successfully" });
     }
   } catch (error) {
-    res.status(500).json({ errors: [{ msg: "server error" }] });
+    console.log("reach catch");
+    res.status(500).json({ error: "server error" });
   }
 }
 

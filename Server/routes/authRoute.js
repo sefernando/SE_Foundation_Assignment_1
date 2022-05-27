@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { check } = require("express-validator");
 
 const {
   signUp,
@@ -8,27 +9,12 @@ const {
   changePassword,
   changeEmail,
 } = require("../service/authService");
+
 const auth = require("../middleware/auth");
-
-const { check, validationResult } = require("express-validator");
-
-//request input validation patterns
-const signupValidation = [
-  check("userName").isLength({ min: 4 }),
-  check("email").isEmail(),
-  check("password").matches(
-    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/
-  ),
-];
-
-//validate inputs
-function validateInputs(req, res, next) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  next();
-}
+const {
+  validateInputs,
+  signupValidation,
+} = require("../middleware/validateInputs");
 
 // routes--------------------------------------------------------
 router.post("/signup", signupValidation, validateInputs, signUp);
@@ -38,3 +24,21 @@ router.put("/changePassword", auth, changePassword); //
 router.put("/changeEmail", auth, changeEmail);
 
 module.exports = router;
+
+//request input validation patterns
+// const signupValidation = [
+//   check("userName").isLength({ min: 4 }),
+//   check("email").isEmail(),
+//   check("password").matches(
+//     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/
+//   ),
+// ];
+
+//validate inputs
+// function validateInputs(req, res, next) {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     return res.status(400).json({ errors: errors.array() });
+//   }
+//   next();
+// }
