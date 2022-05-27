@@ -1,10 +1,10 @@
 import Register from "../components/Register";
-import ChangeCredentials from "../components/ChangeCredentials";
+import ChangePassword from "../components/ChangePassword";
 
 const UserManagement = () => {
   return (
     <>
-      <ChangeCredentials />
+      <ChangePassword />
       <Register />
     </>
   );

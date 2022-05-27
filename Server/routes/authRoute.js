@@ -5,7 +5,8 @@ const {
   signUp,
   signIn,
   checkUserName,
-  changeCredentials,
+  changePassword,
+  changeEmail,
 } = require("../service/authService");
 const auth = require("../middleware/auth");
 
@@ -33,6 +34,7 @@ function validateInputs(req, res, next) {
 router.post("/signup", signupValidation, validateInputs, signUp);
 router.post("/signin", signIn);
 router.get("/checkUserName/:userName", checkUserName);
-router.post("/updatCredentials", auth, changeCredentials);
+router.put("/changePassword", auth, changePassword); //
+router.put("/changeEmail", auth, changeEmail);
 
 module.exports = router;

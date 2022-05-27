@@ -106,97 +106,73 @@ async function checkUserName(req, res) {
   }
 }
 
-//function to update the database
-// async function updateDatabase(req, res, data) {
-//   try {
-//     const updatedUser = await User.update(
-//       { email: "new one" },
-//       {
-//         where: { user_name: userName },
-//       }
-//     );
-
-//     if (updatedUser[0] === 0) {
-//       res.status(500).json({ errors: [{ msg: "user not found" }] });
-//     } else {
-//       res.status(200).json(updatedUser);
-//     }
-//   } catch (error) {
-//     res.status(500).json({ errors: [{ msg: "server error" }] });
-//   }
-// }
-
 /////////////////////////////////////////////////////////////////////////////
-//change credentials --------------------------------------------------------
-async function changeCredentials(req, res) {
+//change password -----------------------------------------------------------
+async function changePassword(req, res) {
   const saltRounds = 10;
   let hashPassword;
   const { userName, password, email } = req.body;
 
+  const PWD_REGEX =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/;
+
+  if (!PWD_REGEX.test(password)) {
+    return res.status(400).json({ errors: [{ msg: "invalid request" }] });
+  }
+
   //hashing password
   if (password) {
     hashPassword = await bcryptjs.hash(password, saltRounds);
+  } else {
+    return res.status(400).json({ errors: [{ msg: "user not found" }] });
   }
 
-  // update the email only
-  if (email && !password) {
-    try {
-      const updatedUser = await User.update(
-        { email },
-        {
-          where: { user_name: userName },
-        }
-      );
-
-      if (updatedUser[0] === 0) {
-        res.status(500).json({ errors: [{ msg: "user not found" }] });
-      } else {
-        res.status(200).json(updatedUser);
+  //updating database
+  try {
+    const updatedUser = await User.update(
+      { password: hashPassword },
+      {
+        where: { user_name: userName },
       }
-    } catch (error) {
-      res.status(500).json({ errors: [{ msg: "server error" }] });
+    );
+
+    if (updatedUser[0] === 0) {
+      res.status(500).json({ errors: [{ msg: "user not found" }] });
+    } else {
+      res.status(200).json(updatedUser);
     }
-  }
-
-  //update the password only
-  if (!email && password) {
-    try {
-      const updatedUser = await User.update(
-        { password: hashPassword },
-        {
-          where: { user_name: userName },
-        }
-      );
-
-      if (updatedUser[0] === 0) {
-        res.status(500).json({ errors: [{ msg: "user not found" }] });
-      } else {
-        res.status(200).json(updatedUser);
-      }
-    } catch (error) {
-      res.status(500).json({ errors: [{ msg: "server error" }] });
-    }
-  }
-
-  //update both email and password
-  if (email && password) {
-    try {
-      const updatedUser = await User.update(
-        { email, password: hashPassword },
-        {
-          where: { user_name: userName },
-        }
-      );
-
-      if (updatedUser[0] === 0) {
-        res.status(500).json({ errors: [{ msg: "user not found" }] });
-      } else {
-        res.status(200).json(updatedUser);
-      }
-    } catch (error) {
-      res.status(500).json({ errors: [{ msg: "server error" }] });
-    }
+  } catch (error) {
+    res.status(500).json({ errors: [{ msg: "server error" }] });
   }
 }
 
-module.exports = { signUp, signIn, checkUserName, changeCredentials };
+/////////////////////////////////////////////////////////////////////////////
+//change email --------------------------------------------------------
+async function changeEmail(req, res) {
+  const { userName, email } = req.body;
+
+  try {
+    const updatedUser = await User.update(
+      { email },
+      {
+        where: { user_name: userName },
+      }
+    );
+
+    if (updatedUser[0] === 0) {
+      res.status(500).json({ errors: [{ msg: "user not found" }] });
+    } else {
+      res.status(200).json(updatedUser);
+    }
+  } catch (error) {
+    res.status(500).json({ errors: [{ msg: "server error" }] });
+  }
+}
+
+module.exports = {
+  signUp,
+  signIn,
+  checkUserName,
+  changePassword,
+  changeEmail,
+};

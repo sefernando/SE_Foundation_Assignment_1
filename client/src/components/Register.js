@@ -5,7 +5,7 @@ const USER_REGEX = /^\S[0-9a-zA-Z]{3,}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]{2,}\.[^\s@]{2,}$/;
 const PASSWORD_REGEX =
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/;
-const RESTER_URL = "/auth/signup";
+const REGISTER_URL = "/auth/signup";
 const CHECK_USERNAME_URL = "/auth/checkUserName";
 
 const Register = () => {
@@ -74,7 +74,7 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        RESTER_URL,
+        REGISTER_URL,
         JSON.stringify({ userName, email, password: pwd, role }),
         {
           headers: { "Content-Type": "application/json" },
@@ -95,7 +95,7 @@ const Register = () => {
   return (
     <section>
       <p className="errMsg">{errMsg}</p>
-      <h2>Registration</h2>
+      <h2>Create New user</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username">Username</label>
@@ -134,7 +134,7 @@ const Register = () => {
         </div>
 
         <div>
-          <label htmlFor="password">Confirm Password</label>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
             name="password"
