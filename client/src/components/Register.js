@@ -5,8 +5,12 @@ const USER_REGEX = /^\S[0-9a-zA-Z]{3,}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]{2,}\.[^\s@]{2,}$/;
 const PASSWORD_REGEX =
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/;
+
 const REGISTER_URL = "/auth/signup";
 const CHECK_USERNAME_URL = "/auth/checkUserName";
+const GET_GROUPS_URL = "/group/getAllGroups";
+
+let existingGroups = [];
 
 const Register = () => {
   const userRef = useRef();
@@ -14,24 +18,19 @@ const Register = () => {
   const [userName, setUserName] = useState("");
   const [validUserName, setValidUserName] = useState(false);
   const [availableUserName, setAvailableUserName] = useState(false);
-  const [userFocus, setUserFocus] = useState(false);
 
   const [email, setEmail] = useState("");
   const [validEmail, setValidEmail] = useState(false);
-  const [emailFocus, setEmailFocus] = useState(false);
 
   const [pwd, setPwd] = useState("");
   const [validPwd, setValidPwd] = useState(false);
-  const [pwdFocus, setPwdFocus] = useState(false);
 
   const [matchPwd, setMatchPwd] = useState("");
   const [validMatch, setValidMatch] = useState(false);
-  const [matchFocus, setMatchFocus] = useState(false);
 
-  const [role, setRole] = useState("");
+  const [groups, setGroups] = useState([]);
 
   const [errMsg, setErrMsg] = useState("");
-  const [success, setSuccess] = useState(false);
 
   async function checkUserName() {
     try {
@@ -48,6 +47,17 @@ const Register = () => {
 
   useEffect(() => {
     userRef.current.focus();
+
+    async function getAllGroups() {
+      try {
+        const response = await axios.get(GET_GROUPS_URL);
+        console.log(response.data.groups);
+        existingGroups = response.data.groups;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getAllGroups();
   }, []);
 
   useEffect(() => {
@@ -56,7 +66,9 @@ const Register = () => {
 
   useEffect(() => {
     setValidUserName(USER_REGEX.test(userName));
-    if (validUserName) checkUserName();
+    if (validUserName) {
+      checkUserName();
+    }
   }, [userName]);
 
   useEffect(() => {
@@ -68,14 +80,20 @@ const Register = () => {
     setValidMatch(pwd === matchPwd);
   }, [pwd, matchPwd]);
 
+  //handleChange function
+  const handleChange = (e) => {
+    let value = Array.from(e.target.selectedOptions, (option) => option.value);
+    setGroups(value);
+  };
+
   //handleSubmit function
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
+      await axios.post(
         REGISTER_URL,
-        JSON.stringify({ userName, email, password: pwd, role }),
+        JSON.stringify({ userName, email, password: pwd, groups }),
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
@@ -168,16 +186,20 @@ const Register = () => {
         </div>
 
         <div>
-          <label htmlFor="role">Role</label>
+          <label htmlFor="groups">Groups</label>
           <select
-            name="role"
-            id="role"
-            onChange={(e) => setRole(e.target.value)}
-            value={role}
+            name="groups"
+            id="groups"
+            multiple={true}
+            value={groups}
+            onChange={handleChange}
+            // value={groups}
           >
-            <option value="user">User</option>
-            <option value="lead">Lead</option>
-            <option value="developer">Developer</option>
+            {existingGroups.map((group) => (
+              <option value={group} key={group}>
+                {group}
+              </option>
+            ))}
           </select>
         </div>
 
