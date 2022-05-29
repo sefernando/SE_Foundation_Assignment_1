@@ -1,3 +1,5 @@
+// this is the login page
+
 import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthProvider";
@@ -38,12 +40,10 @@ const Home = () => {
       );
       // console.log(JSON.stringify(response.data));
       const token = response?.data?.token;
-      const role = response?.data?.role;
-      setAuth({ userName, token, role, isAuthorized: true });
+      const groups = response.data.groups;
+      setAuth({ userName, token, groups, isAuthorized: true });
       setUserName("");
       setPassword("");
-      // console.log("token: ", response?.data?.token);
-      // console.log("role: ", response?.data?.role);
       navigate("/UserManagement");
     } catch (error) {
       if (!error.response) {

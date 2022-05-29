@@ -8,6 +8,7 @@ const {
   checkUserName,
   changePassword,
   changeEmail,
+  disableUser,
 } = require("../service/authService");
 
 const auth = require("../middleware/auth");
@@ -22,6 +23,7 @@ router.post("/signin", signIn);
 router.get("/checkUserName/:userName", checkUserName);
 router.put("/changePassword", auth, changePassword); //
 router.put("/changeEmail", auth, changeEmail);
+router.put("/disableUser", auth, disableUser);
 
 module.exports = router;
 
