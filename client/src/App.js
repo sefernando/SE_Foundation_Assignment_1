@@ -1,11 +1,12 @@
 import "./App.css";
 import { useContext } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import AuthContext from "./context/AuthProvider";
+
 import HOME from "./pages/Home";
-// import UserManagement from "./pages/Admin";
+import Admin from "./pages/Admin";
 import UserManagement from "./pages/UserManagement";
 import ErrorPage from "./pages/ErrorPage";
-import AuthContext from "./context/AuthProvider";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -15,6 +16,7 @@ function App() {
       <nav>
         <Link to="/">Home</Link>
         <Link to="/UserManagement">User Management</Link>
+        <Link to="/admin">Admin</Link>
       </nav>
       <Routes>
         <Route path="/" element={<HOME />} />
@@ -22,6 +24,11 @@ function App() {
         <Route
           path="/UserManagement"
           element={auth.isAuthorized ? <UserManagement /> : <HOME />}
+        />
+
+        <Route
+          path="/admin"
+          element={auth.isAuthorized ? <Admin /> : <HOME />}
         />
 
         <Route path="*" element={<ErrorPage />} />

@@ -7,7 +7,7 @@ const UserManagement = () => {
     <>
       <ChangePassword />
       <ChangeEmail />
-      <Register />
+      {/* <Register /> */}
     </>
   );
 };
