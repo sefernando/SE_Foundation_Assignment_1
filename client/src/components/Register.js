@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import axios from "../api/axios";
+import Select from "react-select";
 
 const USER_REGEX = /^\S[0-9a-zA-Z]{3,}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]{2,}\.[^\s@]{2,}$/;
@@ -29,6 +30,7 @@ const Register = () => {
   const [validMatch, setValidMatch] = useState(false);
 
   const [groups, setGroups] = useState([]);
+  const [options, setOptions] = useState([]);
 
   const [errMsg, setErrMsg] = useState("");
 
@@ -47,18 +49,22 @@ const Register = () => {
 
   useEffect(() => {
     userRef.current.focus();
+    let prepareOptions = [];
 
-    async function getAllGroups() {
+    (async function () {
       try {
         const response = await axios.get(GET_GROUPS_URL);
-        console.log(response.data.groups);
         existingGroups = response.data.groups;
       } catch (error) {
         console.log(error);
       }
-    }
-    getAllGroups();
-  }, []);
+    })();
+
+    existingGroups.forEach((group) => {
+      prepareOptions.push({ value: group, label: group });
+    });
+    setOptions(prepareOptions);
+  }, [userName]);
 
   useEffect(() => {
     setErrMsg("");
@@ -81,9 +87,9 @@ const Register = () => {
   }, [pwd, matchPwd]);
 
   //handleChange function
-  const handleChange = (e) => {
-    let value = Array.from(e.target.selectedOptions, (option) => option.value);
-    setGroups(value);
+  const handleChange = (selectedOptions) => {
+    // let value = Array.from(e.target.selectedOptions, (option) => option.value);
+    setGroups(selectedOptions);
   };
 
   //handleSubmit function
@@ -93,7 +99,12 @@ const Register = () => {
     try {
       await axios.post(
         REGISTER_URL,
-        JSON.stringify({ userName, email, password: pwd, groups }),
+        JSON.stringify({
+          userName,
+          email,
+          password: pwd,
+          groups: groups.map((x) => x.value),
+        }),
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
@@ -187,7 +198,7 @@ const Register = () => {
 
         <div>
           <label htmlFor="groups">Groups</label>
-          <select
+          {/* <select
             name="groups"
             id="groups"
             multiple={true}
@@ -200,7 +211,15 @@ const Register = () => {
                 {group}
               </option>
             ))}
-          </select>
+          </select> */}
+
+          <Select
+            name="groups"
+            isMulti={true}
+            value={groups}
+            options={options}
+            onChange={handleChange}
+          />
         </div>
 
         <button>Submit</button>
