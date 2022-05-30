@@ -8,7 +8,7 @@ import axios from "../api/axios";
 const Home = () => {
   const navigate = useNavigate();
 
-  const { setAuth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthContext);
   const userRef = useRef();
   // const errRef = useRef();
 
@@ -42,6 +42,7 @@ const Home = () => {
       const token = response?.data?.token;
       const groups = response.data.groups;
       setAuth({ userName, token, groups, isAuthorized: true });
+      console.log("printing auth", auth.isAuthorized);
       setUserName("");
       setPassword("");
       navigate("/UserManagement");

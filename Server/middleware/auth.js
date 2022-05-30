@@ -14,8 +14,13 @@ const verifyToken = (req, res, next) => {
     const decoded = jwt.verify(token, privateKey);
     // console.log(req.body.userName);
     // console.log(decoded.userName);
+    console.log(req.params.adminName !== decoded.userName);
+    console.log(req.body.userName !== decoded.userName);
 
-    if (req.body.userName !== decoded.userName) {
+    if (
+      req.body.userName !== decoded.userName &&
+      req.params.adminName !== decoded.userName
+    ) {
       return res.status(401).send("Authorization failed");
     }
 

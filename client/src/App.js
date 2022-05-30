@@ -1,3 +1,5 @@
+import "bootstrap/dist/css/bootstrap.min.css";
+
 import "./App.css";
 import { useContext } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -16,8 +18,12 @@ function App() {
       <nav>
         <Link to="/">Home</Link>
         <Link to="/UserManagement">User Management</Link>
-        <Link to="/admin">Admin</Link>
+        {auth.groups?.includes("admin") && <Link to="/admin">Admin</Link>}
       </nav>
+
+      <hr />
+      <br />
+
       <Routes>
         <Route path="/" element={<HOME />} />
 
