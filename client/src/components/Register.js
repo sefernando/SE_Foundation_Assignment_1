@@ -53,18 +53,19 @@ const Register = () => {
 
     (async function () {
       try {
+        console.log("fetching data");
+
         const response = await axios.get(GET_GROUPS_URL);
         existingGroups = response.data.groups;
+        existingGroups.forEach((group) => {
+          prepareOptions.push({ value: group, label: group });
+        });
+        setOptions(prepareOptions);
       } catch (error) {
         console.log(error);
       }
     })();
-
-    existingGroups.forEach((group) => {
-      prepareOptions.push({ value: group, label: group });
-    });
-    setOptions(prepareOptions);
-  }, [userName]);
+  }, []);
 
   useEffect(() => {
     setErrMsg("");
