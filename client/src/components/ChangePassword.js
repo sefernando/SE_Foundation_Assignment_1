@@ -5,7 +5,7 @@ import AuthContext from "../context/AuthProvider";
 
 const PASSWORD_REGEX =
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/;
-const CHANGE_PWD_URL = "auth/changePassword";
+const CHANGE_PWD_URL = "user/changePassword";
 
 const ChangePassword = () => {
   const { auth } = useContext(AuthContext);

@@ -4,7 +4,7 @@ import axios from "../api/axios";
 import AuthContext from "../context/AuthProvider";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]{2,}\.[^\s@]{2,}$/;
-const CHANGE_EMAIL_URL = "auth/changeEmail";
+const CHANGE_EMAIL_URL = "user/changeEmail";
 
 const ChangeEmail = () => {
   const emailRef = useRef();

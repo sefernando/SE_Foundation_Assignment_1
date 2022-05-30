@@ -16,8 +16,8 @@ function App() {
   return (
     <Router>
       <nav>
-        <Link to="/">Home</Link>
-        <Link to="/UserManagement">User Management</Link>
+        <Link to="/">Home | </Link>
+        <Link to="/UserManagement"> User Management | </Link>
         {auth.groups?.includes("admin") && <Link to="/admin">Admin</Link>}
       </nav>
 

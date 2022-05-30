@@ -21,9 +21,9 @@ const {
 router.post("/signup", signupValidation, validateInputs, signUp);
 router.post("/signin", signIn);
 router.get("/checkUserName/:userName", checkUserName);
-router.put("/changePassword", auth, changePassword); //
-router.put("/changeEmail", auth, changeEmail);
-router.put("/disableUser", auth, disableUser);
+// router.put("/changePassword", auth, changePassword); //
+// router.put("/changeEmail", auth, changeEmail);
+// router.put("/disableUser", auth, disableUser);
 
 module.exports = router;
 

@@ -17,14 +17,16 @@ const verifyToken = (req, res, next) => {
     console.log(req.params.adminName !== decoded.userName);
     console.log(req.body.userName !== decoded.userName);
 
-    if (
-      req.body.userName !== decoded.userName &&
-      req.params.adminName !== decoded.userName
-    ) {
-      return res.status(401).send("Authorization failed");
+    if (req.body.adminUserName) {
+      if (req.body.adminUserName !== decoded.userName) {
+        return res.status(401).send("Authorization failed");
+      }
+    } else {
+      if (req.body.userName !== decoded.userName) {
+        return res.status(401).send("Authorization failed");
+      }
+      req.user = decoded;
     }
-
-    req.user = decoded;
   } catch (err) {
     return res.status(401).send("Invalid Token");
   }
