@@ -9,37 +9,42 @@ import HOME from "./pages/Home";
 import Admin from "./pages/Admin";
 import UserManagement from "./pages/UserManagement";
 import ErrorPage from "./pages/ErrorPage";
+import NavBar from "./components/NavBar";
 
 function App() {
   const { auth } = useContext(AuthContext);
 
   return (
-    <Router>
-      <nav>
-        <Link to="/">Home | </Link>
-        <Link to="/UserManagement"> User Management | </Link>
-        {auth.groups?.includes("admin") && <Link to="/admin">Admin</Link>}
-      </nav>
+    <NavBar />
 
-      <hr />
-      <br />
+    //-----------------------------------------------------------
 
-      <Routes>
-        <Route path="/" element={<HOME />} />
+    // <Router>
+    //   <nav>
+    //     <Link to="/">Home | </Link>
+    //     <Link to="/UserManagement"> User Management | </Link>
+    //     {auth.groups?.includes("admin") && <Link to="/admin">Admin</Link>}
+    //   </nav>
 
-        <Route
-          path="/UserManagement"
-          element={auth.isAuthorized ? <UserManagement /> : <HOME />}
-        />
+    //   <hr />
+    //   <br />
 
-        <Route
-          path="/admin"
-          element={auth.isAuthorized ? <Admin /> : <HOME />}
-        />
+    //   <Routes>
+    //     <Route path="/" element={<HOME />} />
 
-        <Route path="*" element={<ErrorPage />} />
-      </Routes>
-    </Router>
+    //     <Route
+    //       path="/UserManagement"
+    //       element={auth.isAuthorized ? <UserManagement /> : <HOME />}
+    //     />
+
+    //     <Route
+    //       path="/admin"
+    //       element={auth.isAuthorized ? <Admin /> : <HOME />}
+    //     />
+
+    //     <Route path="*" element={<ErrorPage />} />
+    //   </Routes>
+    // </Router>
   );
 }
 
