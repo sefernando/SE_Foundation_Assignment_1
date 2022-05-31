@@ -157,9 +157,47 @@ async function addToGroup(req, res) {
   }
 }
 
+//////////////////////////////////////////////////////////////
+//get all users --------------------------------------------
+async function getAllUsers(req, res) {
+  try {
+    const users = await User.findAll({
+      attributes: [["user_name", "userName"], "isActive"],
+      // include: [
+      //   {
+      //     model: Group,
+      //     // as: "groups",
+      //     attributes: ["groupName"],
+      //     through: {
+      //       attributes: [],
+      //     },
+      //   },
+      // ],
+    });
+    if (users) {
+      // console.log("get user", users);
+
+      res.status(200).json({
+        users,
+        // ...user.dataValues,
+        // userName: user.dataValues.user_name,
+        // email: user.dataValues.email,
+        // password: "*******",
+        // isActive: user.dataValues.isActive,
+        // groups: user.Groups.map((group) => group.groupName),
+      });
+    } else {
+      res.status(400).json({ error: "User Not Found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "server error" });
+  }
+}
+
 // --------------------------------------------------------------------------
 module.exports = {
   getUser,
+  getAllUsers,
   changeEmail,
   changePassword,
   changeAccStatus,

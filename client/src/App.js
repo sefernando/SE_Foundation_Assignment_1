@@ -38,7 +38,7 @@ function App() {
           element={auth.isAuthorized ? <CreateUser /> : <HOME />}
         />
         <Route
-          path="/editUser"
+          path="/editUser/:userName"
           element={auth.isAuthorized ? <EditUser /> : <HOME />}
         />
 

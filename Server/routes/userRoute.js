@@ -4,6 +4,7 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const {
   getUser,
+  getAllUsers,
   changeAccStatus,
   changeEmail,
   changePassword,
@@ -12,6 +13,7 @@ const {
 
 // routes--------------------------------------------------------
 router.get("/getUser/:userName", getUser);
+router.get("/getAllUsers", getAllUsers);
 router.put("/changePassword", auth, changePassword); //
 router.put("/changeEmail", auth, changeEmail);
 router.put("/changeAccStatus", auth, changeAccStatus);
