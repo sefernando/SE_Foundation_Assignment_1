@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Group } = require("../models");
 const bcryptjs = require("bcryptjs");
 // const { Op } = require("sequelize");
 // const jwt = require("jsonwebtoken");
@@ -9,12 +9,29 @@ async function getUser(req, res) {
   const userName = req.params.userName;
 
   try {
-    const user = await User.findByPk(userName);
+    const user = await User.findOne({
+      where: { user_name: userName },
+      include: [
+        {
+          model: Group,
+          // as: "groups",
+          attributes: ["groupName"],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+    });
     if (user) {
+      console.log("get user", user);
+
       res.status(200).json({
-        ...user.dataValues,
-        password: "*******",
+        // ...user.dataValues,
         userName: user.dataValues.user_name,
+        email: user.dataValues.email,
+        password: "*******",
+        isActive: user.dataValues.isActive,
+        groups: user.Groups.map((group) => group.groupName),
       });
     } else {
       res.status(400).json({ error: "User Not Found" });
@@ -113,5 +130,38 @@ async function changeAccStatus(req, res) {
   }
 }
 
+//////////////////////////////////////////////////////////////
+//add to group function -------------------------------------
+async function addToGroup(req, res) {
+  let newUser;
+  const user = await User.findByPk(req.body.userName);
+
+  if (!user) {
+    return res.status(400).json({ error: "user not found" });
+  }
+
+  try {
+    req.body.groups.forEach(async (groupName) => {
+      const group = await Group.findOne({
+        where: { groupName },
+      });
+
+      if (group) {
+        newUser = await user.addGroup(group);
+      }
+    });
+
+    res.status(200).json({ msg: "Group successfully added" });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+}
+
 // --------------------------------------------------------------------------
-module.exports = { getUser, changeEmail, changePassword, changeAccStatus };
+module.exports = {
+  getUser,
+  changeEmail,
+  changePassword,
+  changeAccStatus,
+  addToGroup,
+};

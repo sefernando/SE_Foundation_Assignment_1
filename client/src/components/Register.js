@@ -3,9 +3,6 @@ import axios from "../api/axios";
 import Select from "react-select";
 
 const USER_REGEX = /^\S[0-9a-zA-Z]{3,}$/;
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]{2,}\.[^\s@]{2,}$/;
-const PASSWORD_REGEX =
-  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/;
 
 const REGISTER_URL = "/auth/signup";
 const CHECK_USERNAME_URL = "/auth/checkUserName";
@@ -13,24 +10,28 @@ const GET_GROUPS_URL = "/group/getAllGroups";
 
 let existingGroups = [];
 
-const Register = () => {
+const Register = ({
+  groups,
+  setGroups,
+  options,
+  pwd,
+  setPwd,
+  validPwd,
+  email,
+  setEmail,
+  validEmail,
+}) => {
   const userRef = useRef();
 
   const [userName, setUserName] = useState("");
   const [validUserName, setValidUserName] = useState(false);
   const [availableUserName, setAvailableUserName] = useState(false);
 
-  const [email, setEmail] = useState("");
-  const [validEmail, setValidEmail] = useState(false);
-
-  const [pwd, setPwd] = useState("");
-  const [validPwd, setValidPwd] = useState(false);
-
   const [matchPwd, setMatchPwd] = useState("");
   const [validMatch, setValidMatch] = useState(false);
 
-  const [groups, setGroups] = useState([]);
-  const [options, setOptions] = useState([]);
+  // const [groups, setGroups] = useState([]);
+  // const [options, setOptions] = useState([]);
 
   const [errMsg, setErrMsg] = useState("");
 
@@ -49,22 +50,6 @@ const Register = () => {
 
   useEffect(() => {
     userRef.current.focus();
-    let prepareOptions = [];
-
-    (async function () {
-      try {
-        console.log("fetching data");
-
-        const response = await axios.get(GET_GROUPS_URL);
-        existingGroups = response.data.groups;
-        existingGroups.forEach((group) => {
-          prepareOptions.push({ value: group, label: group });
-        });
-        setOptions(prepareOptions);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
   }, []);
 
   useEffect(() => {
@@ -79,11 +64,6 @@ const Register = () => {
   }, [userName]);
 
   useEffect(() => {
-    setValidEmail(EMAIL_REGEX.test(email));
-  }, [email]);
-
-  useEffect(() => {
-    setValidPwd(PASSWORD_REGEX.test(pwd));
     setValidMatch(pwd === matchPwd);
   }, [pwd, matchPwd]);
 
