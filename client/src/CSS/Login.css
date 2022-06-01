@@ -1,0 +1,8 @@
+.login_wrapper{
+  width: 40%;
+  margin: auto;
+  margin-top: 10%;
+  padding: 4%;
+  border-radius: 5px;
+  border: 1px solid lightgray
+}

@@ -48,6 +48,7 @@ const CreateGroup = () => {
       <h2>Create New Group</h2>
       <br />
       <Form onSubmit={handleSubmit}>
+        <Form.Text className=" text-danger">{errMsg}</Form.Text>
         <Form.Group
           as={Row}
           className="mb-3"
@@ -57,8 +58,6 @@ const CreateGroup = () => {
             Group Name
           </Form.Label>
           <Col sm={10}>
-            <Form.Text className=" text-danger">{errMsg}</Form.Text>
-
             <Form.Control
               type="text"
               placeholder="Enter Group Name"

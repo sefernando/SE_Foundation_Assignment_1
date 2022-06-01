@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef, useContext } from "react";
+import { Form, Button, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import AuthContext from "../context/AuthProvider";
 import axios from "../api/axios";
+
+import AuthContext from "../context/AuthProvider";
+import "../CSS/Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,7 +16,6 @@ const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     userRef.current.focus();
@@ -56,45 +58,71 @@ const Login = () => {
       if (!error.response) {
         setErrMsg("No server response");
       } else {
-        setErrMsg("Login failed");
+        setErrMsg("Login Failed");
       }
       // errRef.current.focus();
     }
   };
 
   return (
-    <section>
-      <p className="errMsg" style={{ color: "red" }}>
-        {errMsg}
-      </p>
-      <h2>Sign In</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">User Name</label>
-          <input
-            type="text"
-            id="username"
-            ref={userRef}
-            autoComplete="off"
-            onChange={(e) => setUserName(e.target.value)}
-            value={userName}
-            required
-          ></input>
-        </div>
+    <>
+      <section className="login_wrapper">
+        <p className="errMsg" style={{ color: "red" }}>
+          {errMsg}
+        </p>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group
+            as={Row}
+            className="mb-3"
+            controlId="formPlaintextUsername"
+          >
+            <Form.Label column sm="2">
+              Username
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                type="text"
+                placeholder="Enter username"
+                ref={userRef}
+                autoComplete="off"
+                onChange={(e) => setUserName(e.target.value)}
+                value={userName}
+                required
+              />
+            </Col>
+          </Form.Group>
 
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            required
-          ></input>
-        </div>
-        <button>Submit</button>
-      </form>
-    </section>
+          <Form.Group
+            as={Row}
+            className="mb-3"
+            controlId="formPlaintextPassword"
+          >
+            <Form.Label column sm="2">
+              Password
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                type="password"
+                placeholder="Enter password"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                required
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Label column sm="2"></Form.Label>
+
+          <Button
+            type="submit"
+            disabled={!userName || !password}
+            variant={userName && password ? "primary" : "secondary"}
+          >
+            Submit
+          </Button>
+        </Form>
+      </section>
+    </>
   );
 };
 
