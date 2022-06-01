@@ -1,7 +1,17 @@
-import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Container, Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
+import { useContext } from "react";
+
+import AuthContext from "../context/AuthProvider";
+
 const NavBar = () => {
+  const { auth, setAuth } = useContext(AuthContext);
+
+  function handleClick() {
+    setAuth({});
+  }
+
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -15,17 +25,24 @@ const NavBar = () => {
             <Nav.Link as={NavLink} to="/UserManagement">
               User Management
             </Nav.Link>
-            <NavDropdown title="Admin" id="basic-nav-dropdown">
-              <NavDropdown.Item as={NavLink} to="allUsers">
-                All Users
-              </NavDropdown.Item>
-              <NavDropdown.Item as={NavLink} to="createUser">
-                Create User
-              </NavDropdown.Item>
-              <NavDropdown.Item as={NavLink} to="editUser">
-                Edit User
-              </NavDropdown.Item>
-            </NavDropdown>
+
+            {auth.groups?.includes("admin") && (
+              <NavDropdown title="Admin" id="basic-nav-dropdown">
+                <NavDropdown.Item as={NavLink} to="allUsers">
+                  All Users
+                </NavDropdown.Item>
+                <NavDropdown.Item as={NavLink} to="createUser">
+                  Create
+                </NavDropdown.Item>
+                <NavDropdown.Item as={NavLink} to="editUser">
+                  Edit
+                </NavDropdown.Item>
+              </NavDropdown>
+            )}
+
+            <Button variant="outline-danger" onClick={handleClick}>
+              Logout
+            </Button>
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -12,7 +12,7 @@ import ErrorPage from "./pages/ErrorPage";
 import NavBar from "./components/NavBar";
 import AllUseres from "./pages/AllUseres";
 import EditUser from "./pages/EditUser";
-import CreateUser from "./pages/CreateUser";
+import CreateNew from "./pages/CreateNew";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -35,7 +35,7 @@ function App() {
         />
         <Route
           path="/createUser"
-          element={auth.isAuthorized ? <CreateUser /> : <HOME />}
+          element={auth.isAuthorized ? <CreateNew /> : <HOME />}
         />
         <Route
           path="/editUser/:userName"

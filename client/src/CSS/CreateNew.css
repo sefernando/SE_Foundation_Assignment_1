@@ -1,0 +1,8 @@
+.componentWrapper{
+  display: flex;
+  justify-content: space-evenly 
+}
+
+.flexItem{
+  padding: 40px;
+}

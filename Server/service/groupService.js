@@ -4,9 +4,6 @@ const { Group } = require("../models");
 //create group function -------------------------------------
 async function createGroup(req, res) {
   const { userName, groupName } = req.body;
-  if (userName !== "admin") {
-    return res.status(401).json({ error: "Access denied" });
-  }
 
   const existingGroup = await Group.findOne({ where: { groupName } });
   if (existingGroup) {
@@ -39,5 +36,23 @@ async function getAllGroups(req, res) {
   }
 }
 
+//////////////////////////////////////////////////////////////
+//check if group name available-------------------------------
+async function checkGroup(req, res) {
+  try {
+    const groupName = req.query.groupName;
+    console.log("gn", groupName);
+    const group = await Group.findOne({ where: { groupName } });
+
+    if (group) {
+      res.status(200).json({ msg: "group available" });
+    } else {
+      res.status(404).json({ msg: "group cannot find" });
+    }
+  } catch (error) {
+    res.status(500).json({ msg: "server error" });
+  }
+}
+
 //---------------------------------------------------------------------------
-module.exports = { createGroup, getAllGroups };
+module.exports = { createGroup, getAllGroups, checkGroup };

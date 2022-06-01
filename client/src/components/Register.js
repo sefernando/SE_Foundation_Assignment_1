@@ -1,7 +1,10 @@
-import { useRef, useState, useEffect } from "react";
 import axios from "../api/axios";
+import { useRef, useState, useEffect } from "react";
 import Select from "react-select";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]{2,}\.[^\s@]{2,}$/;
+const PASSWORD_REGEX =
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/;
 const USER_REGEX = /^\S[0-9a-zA-Z]{3,}$/;
 
 const REGISTER_URL = "/auth/signup";
@@ -10,17 +13,20 @@ const GET_GROUPS_URL = "/group/getAllGroups";
 
 let existingGroups = [];
 
-const Register = ({
-  groups,
-  setGroups,
-  options,
-  pwd,
-  setPwd,
-  validPwd,
-  email,
-  setEmail,
-  validEmail,
-}) => {
+const Register = () => {
+  // const [user, setUser] = useState({});
+  // const [userAvailable, setUserAvailable] = useState(false);
+  const [allGroups, setAllGroups] = useState([]);
+
+  const [groups, setGroups] = useState([]);
+  const [options, setOptions] = useState([]);
+
+  const [email, setEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(false);
+
+  const [pwd, setPwd] = useState("");
+  const [validPwd, setValidPwd] = useState(false);
+
   const userRef = useRef();
 
   const [userName, setUserName] = useState("");
@@ -30,11 +36,38 @@ const Register = ({
   const [matchPwd, setMatchPwd] = useState("");
   const [validMatch, setValidMatch] = useState(false);
 
-  // const [groups, setGroups] = useState([]);
-  // const [options, setOptions] = useState([]);
-
   const [errMsg, setErrMsg] = useState("");
 
+  useEffect(() => {
+    setValidEmail(EMAIL_REGEX.test(email));
+  }, [email]);
+
+  useEffect(() => {
+    setValidPwd(PASSWORD_REGEX.test(pwd));
+  }, [pwd]);
+
+  //fetching all groups and preparing list options
+  useEffect(() => {
+    (async function () {
+      try {
+        let prepareOptions = [];
+
+        const response = await axios.get(GET_GROUPS_URL);
+        existingGroups = response.data.groups;
+
+        setAllGroups(existingGroups);
+
+        existingGroups.forEach((group) => {
+          prepareOptions.push({ value: group, label: group });
+        });
+        setOptions(prepareOptions);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+
+  //checking if username is available
   async function checkUserName() {
     try {
       const response = await axios.get(`${CHECK_USERNAME_URL}/${userName}`);
@@ -69,16 +102,23 @@ const Register = ({
 
   //handleChange function
   const handleChange = (selectedOptions) => {
-    // let value = Array.from(e.target.selectedOptions, (option) => option.value);
     setGroups(selectedOptions);
   };
+
+  //function to clear inputs
+  function clearInputs() {
+    setUserName("");
+    setEmail("");
+    setPwd("");
+    setMatchPwd("");
+  }
 
   //handleSubmit function
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post(
+      const response = await axios.post(
         REGISTER_URL,
         JSON.stringify({
           userName,
@@ -91,6 +131,9 @@ const Register = ({
           withCredentials: true,
         }
       );
+
+      clearInputs();
+      alert("Registration successful");
     } catch (error) {
       if (!error.response) {
         setErrMsg("No server response");
@@ -106,6 +149,7 @@ const Register = ({
     <section>
       <p className="errMsg">{errMsg}</p>
       <h2>Create New user</h2>
+      <br />
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username">Username</label>
@@ -179,20 +223,6 @@ const Register = ({
 
         <div>
           <label htmlFor="groups">Groups</label>
-          {/* <select
-            name="groups"
-            id="groups"
-            multiple={true}
-            value={groups}
-            onChange={handleChange}
-            // value={groups}
-          >
-            {existingGroups.map((group) => (
-              <option value={group} key={group}>
-                {group}
-              </option>
-            ))}
-          </select> */}
 
           <Select
             name="groups"

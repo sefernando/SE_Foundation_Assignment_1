@@ -36,10 +36,18 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      // console.log(JSON.stringify(response.data));
-      const token = response?.data?.token;
-      const groups = response.data.groups;
-      setAuth({ userName, token, groups, isAuthorized: true });
+      console.log(response.data);
+      // const token = response?.data?.token;
+      // const groups = response?.data?.groups;
+      // const isActive = response?.data?.active;
+      const { token, groups, active } = response?.data;
+
+      if (active) {
+        setAuth({ userName, token, groups, isAuthorized: true });
+      } else {
+        alert("Your account is disabled. Please contact system admin");
+      }
+
       console.log("printing auth", auth.isAuthorized);
       setUserName("");
       setPassword("");
@@ -56,7 +64,9 @@ const Login = () => {
 
   return (
     <section>
-      <p className="errMsg">{errMsg}</p>
+      <p className="errMsg" style={{ color: "red" }}>
+        {errMsg}
+      </p>
       <h2>Sign In</h2>
       <form onSubmit={handleSubmit}>
         <div>

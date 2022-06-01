@@ -4,6 +4,7 @@ import { useContext, useState, useEffect } from "react";
 import AuthContext from "../context/AuthProvider";
 import Select from "react-select";
 import { useParams } from "react-router-dom";
+import { alertService } from "../components/AlertService";
 
 const CHANG_ACC_STATUS_URL = "user/changeAccStatus";
 const CHANGE_EMAIL_URL = "user/changeEmail";
@@ -16,17 +17,15 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]{2,}\.[^\s@]{2,}$/;
 const PASSWORD_REGEX =
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/;
 
-let existingGroups = [];
-
 const EditUser = () => {
   const { userName } = useParams();
 
   const { auth } = useContext(AuthContext);
 
   const [user, setUser] = useState({});
-  const [userAvailable, setUserAvailable] = useState(false);
 
-  const [allGroups, setAllGroups] = useState([]);
+  const [successAlt, setSuccessAlt] = useState(false);
+  const [errAlt, setErrAlert] = useState(false);
 
   const [groups, setGroups] = useState([]);
   const [options, setOptions] = useState([]);
@@ -67,10 +66,10 @@ const EditUser = () => {
   useEffect(() => {
     (async function () {
       try {
-        let prepareOptions = [];
+        const prepareOptions = [];
 
         const response = await axios.get(GET_GROUPS_URL);
-        existingGroups = response.data.groups;
+        const existingGroups = response.data.groups;
 
         // setAllGroups(existingGroups);
 
@@ -87,7 +86,7 @@ const EditUser = () => {
   //function to check if user is registered in a group
   function checkGroup(userName, groupName) {
     if (userName === user.userName) {
-      return user.groups.includes(groupName);
+      return user?.groups?.includes(groupName);
     } else {
       return false;
     }
@@ -120,7 +119,11 @@ const EditUser = () => {
       );
 
       setUser({ ...user, isActive: !user.isActive });
-    } catch (error) {}
+      setSuccessAlt(true);
+      //alert("Success");
+    } catch (error) {
+      setErrAlert(true);
+    }
   }
 
   //function for admin to change the email
