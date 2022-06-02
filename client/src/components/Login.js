@@ -38,14 +38,11 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      console.log(response.data);
-      // const token = response?.data?.token;
-      // const groups = response?.data?.groups;
-      // const isActive = response?.data?.active;
-      const { token, groups, active } = response?.data;
+
+      const { token, groups, active, email } = response?.data;
 
       if (active) {
-        setAuth({ userName, token, groups, isAuthorized: true });
+        setAuth({ userName, email, token, groups, isAuthorized: true });
       } else {
         alert("Your account is disabled. Please contact system admin");
       }

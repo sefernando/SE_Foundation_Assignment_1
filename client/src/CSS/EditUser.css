@@ -1,0 +1,7 @@
+.form-wrapper{
+  width: 60%;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  margin: 40px auto 10px auto;
+  padding: 20px
+}

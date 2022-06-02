@@ -40,13 +40,12 @@ const ChangeEmail = () => {
           withCredentials: true,
         }
       );
-      if (response) console.log("email successfully changed");
-    } catch (error) {
-      if (!error.response) {
-        setErrMsg("No server response");
-      } else {
-        setErrMsg("Email updating Failed");
+      if (response) {
+        alert("Email changed successfully");
+        setEmail("");
       }
+    } catch (error) {
+      alert("Email updating failed. make sure you entered a diffeent email");
     }
   };
 
@@ -67,6 +66,9 @@ const ChangeEmail = () => {
           />
           {email && !validEmail && (
             <small style={{ color: "red" }}>Enter a valid email</small>
+          )}
+          {email == auth.email && (
+            <small style={{ color: "red" }}>Enter a different email</small>
           )}
         </div>
         <button>Submit</button>

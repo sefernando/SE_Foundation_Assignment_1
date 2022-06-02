@@ -120,6 +120,7 @@ async function signIn(req, res) {
   //creating and sending jwt token
   const payLoad = {
     userName: user.user_name,
+    email: user.email,
     active: user.isActive,
     groups: user.Groups.map((group) => group.groupName),
   };
@@ -134,6 +135,7 @@ async function signIn(req, res) {
         msg: "Login successfull",
         token,
         userName: user.user_name,
+        email: user.email,
         groups: user.Groups.map((group) => group.groupName),
         active: user.isActive,
       });

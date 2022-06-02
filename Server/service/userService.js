@@ -134,10 +134,34 @@ async function changeAccStatus(req, res) {
 //add to group function -------------------------------------
 async function addToGroup(req, res) {
   let newUser;
-  const user = await User.findByPk(req.body.userName);
+  // const user = await User.findByPk(req.body.userName);
+  const user = await User.findOne({
+    where: { user_name: req.body.userName },
+    include: [
+      {
+        model: Group,
+        // as: "groups",
+        attributes: ["groupName"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
+  });
 
   if (!user) {
     return res.status(400).json({ error: "user not found" });
+  }
+
+  //check group function
+  function checkGroup(userName, groupName) {
+    if (userName === user.user_name) {
+      user.Groups.forEach((group) => {
+        return group.groupName === groupName;
+      });
+    } else {
+      return false;
+    }
   }
 
   try {
@@ -146,7 +170,9 @@ async function addToGroup(req, res) {
         where: { groupName },
       });
 
-      if (group) {
+      const userExistingGroups = checkGroup(req.body.userName, groupName);
+
+      if (group && !userExistingGroups) {
         newUser = await user.addGroup(group);
       }
     });

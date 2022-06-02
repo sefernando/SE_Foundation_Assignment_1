@@ -5,6 +5,7 @@ import AuthContext from "../context/AuthProvider";
 import Select from "react-select";
 import { useParams } from "react-router-dom";
 import { alertService } from "../components/AlertService";
+import "../CSS/EditUser.css";
 
 const CHANG_ACC_STATUS_URL = "user/changeAccStatus";
 const CHANGE_EMAIL_URL = "user/changeEmail";
@@ -23,6 +24,7 @@ const EditUser = () => {
   const { auth } = useContext(AuthContext);
 
   const [user, setUser] = useState({});
+  const [changeInfo, setChangeInfo] = useState(false);
 
   const [successAlt, setSuccessAlt] = useState(false);
   const [errAlt, setErrAlert] = useState(false);
@@ -55,12 +57,13 @@ const EditUser = () => {
         console.log("getuser", response.data);
         if (response.data) {
           setUser(response.data);
+          setChangeInfo(false);
         }
       } catch (error) {
         console.log(error);
       }
     })();
-  }, []);
+  }, [changeInfo]);
 
   //fetching all groups and preparing list options
   useEffect(() => {
@@ -81,7 +84,7 @@ const EditUser = () => {
         console.log(error);
       }
     })();
-  }, []);
+  }, [changeInfo]);
 
   //function to check if user is registered in a group
   function checkGroup(userName, groupName) {
@@ -118,11 +121,16 @@ const EditUser = () => {
         }
       );
 
-      setUser({ ...user, isActive: !user.isActive });
-      setSuccessAlt(true);
-      //alert("Success");
+      if (response) {
+        setUser({ ...user, isActive: !user.isActive });
+        setSuccessAlt(true);
+        user.isActive
+          ? alert("Successfully deactivated")
+          : alert("Successfully activated");
+      }
     } catch (error) {
       setErrAlert(true);
+      alert("error");
     }
   }
 
@@ -130,42 +138,61 @@ const EditUser = () => {
   async function handleEmailSubmit(e) {
     e.preventDefault();
 
-    const response = await axios.put(
-      CHANGE_EMAIL_URL,
-      JSON.stringify({
-        userName: user.userName,
-        adminUserName: auth.userName,
-        email: email,
-      }),
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": auth.token,
-        },
-        withCredentials: true,
+    try {
+      const response = await axios.put(
+        CHANGE_EMAIL_URL,
+        JSON.stringify({
+          userName: user.userName,
+          adminUserName: auth.userName,
+          email: email,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": auth.token,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (response) {
+        setChangeInfo(true);
+        setEmail("");
+        alert("Email chanaged successfully");
       }
-    );
+    } catch (error) {
+      alert("error");
+    }
   }
 
   //function for admin to change the password
   async function handlePasswordSubmit(e) {
     e.preventDefault();
 
-    const response = await axios.put(
-      CHANGE_PWD_URL,
-      JSON.stringify({
-        userName: user.userName,
-        adminUserName: auth.userName,
-        password: pwd,
-      }),
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": auth.token,
-        },
-        withCredentials: true,
+    try {
+      const response = await axios.put(
+        CHANGE_PWD_URL,
+        JSON.stringify({
+          userName: user.userName,
+          adminUserName: auth.userName,
+          password: pwd,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": auth.token,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (response) {
+        setPwd("");
+        alert("Password chanaged successfully");
       }
-    );
+    } catch (error) {
+      alert("Error");
+    }
   }
 
   //handleChange function
@@ -178,144 +205,159 @@ const EditUser = () => {
   const handleGroupsSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.put(
-      ADD_TO_GROUP_URL,
-      JSON.stringify({
-        userName: user.userName,
-        adminUserName: auth.userName,
-        groups: groups.map((x) => x.value),
-      }),
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": auth.token,
-        },
+    try {
+      const response = await axios.put(
+        ADD_TO_GROUP_URL,
+        JSON.stringify({
+          userName: user.userName,
+          adminUserName: auth.userName,
+          groups: groups.map((x) => x.value),
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": auth.token,
+          },
 
-        withCredentials: true,
+          withCredentials: true,
+        }
+      );
+
+      if (response) {
+        setGroups([]);
+        setChangeInfo(true);
+        alert("User successfully added to new groups");
       }
-    );
+    } catch (error) {
+      alert("Error");
+    }
   };
 
   return (
     <>
       <h2>Reset User Information</h2>
 
-      <Form onSubmit={handleAccStatusSubmit}>
-        <Form.Group
-          as={Row}
-          className="mb-3"
-          controlId="formHorizontalUsername"
-        >
-          <Form.Label column sm={2}>
-            Username
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              placeholder={user.userName}
-              aria-label="Disabled input example"
-              disabled
-              readOnly
-            />
-          </Col>
-          <Col sm={{ span: 10, offset: 2 }}>
-            <Button variant={buttonVariant} type="submit">
-              {buttonText}
-            </Button>
-          </Col>
-        </Form.Group>
-      </Form>
+      <section className="form-wrapper">
+        <Form onSubmit={handleAccStatusSubmit}>
+          <Form.Group
+            as={Row}
+            className="mb-3"
+            controlId="formHorizontalUsername"
+          >
+            <Form.Label column sm={2}>
+              Username
+            </Form.Label>
+            <Col sm={10}>
+              <Form.Control
+                type="text"
+                placeholder={user.userName}
+                aria-label="Disabled input example"
+                disabled
+                readOnly
+              />
+            </Col>
+            <Col sm={{ span: 10, offset: 2 }}>
+              <Button variant={buttonVariant} type="submit">
+                {buttonText}
+              </Button>
+            </Col>
+          </Form.Group>
+        </Form>
 
-      <Form onSubmit={handleEmailSubmit}>
-        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-          <Form.Label column sm={2}>
-            Email
-          </Form.Label>
-          <Col sm={10}>
-            {email && !validEmail && (
-              <small style={{ color: "red" }}>Enter a valid email</small>
-            )}
-            <Form.Control
-              type="email"
-              placeholder={user.email}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </Col>
-          <Col sm={{ span: 10, offset: 2 }}>
-            <Button
-              type="submit"
-              disabled={!validEmail}
-              variant={validEmail ? "primary" : "secondary"}
-            >
-              Change Email
-            </Button>
-          </Col>
-        </Form.Group>
-      </Form>
+        <Form onSubmit={handleEmailSubmit}>
+          <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+            <Form.Label column sm={2}>
+              Email
+            </Form.Label>
+            <Col sm={10}>
+              {email && !validEmail && (
+                <small style={{ color: "red" }}>Enter a valid email</small>
+              )}
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Col>
+            <Col sm={{ span: 10, offset: 2 }}>
+              <Button
+                type="submit"
+                disabled={!validEmail}
+                variant={validEmail ? "primary" : "secondary"}
+              >
+                Change Email
+              </Button>
+            </Col>
+          </Form.Group>
+        </Form>
 
-      <Form onSubmit={handlePasswordSubmit}>
-        <Form.Group
-          as={Row}
-          className="mb-3"
-          controlId="formHorizontalPassword"
-        >
-          <Form.Label column sm={2}>
-            Password
-          </Form.Label>
-          <Col sm={10}>
-            {pwd && !validPwd && (
-              <small style={{ color: "red" }}>
-                8 to 10 characters including alphabets , numbers, and special
-                characters
-              </small>
-            )}
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              value={pwd}
-              onChange={(e) => setPwd(e.target.value)}
-            />
-          </Col>
-          <Col sm={{ span: 10, offset: 2 }}>
-            <Button
-              type="submit"
-              disabled={!validPwd}
-              variant={validPwd ? "primary" : "secondary"}
-            >
-              Change Password
-            </Button>
-          </Col>
-        </Form.Group>
-      </Form>
+        <Form onSubmit={handlePasswordSubmit}>
+          <Form.Group
+            as={Row}
+            className="mb-3"
+            controlId="formHorizontalPassword"
+          >
+            <Form.Label column sm={2}>
+              Password
+            </Form.Label>
+            <Col sm={10}>
+              {pwd && !validPwd && (
+                <small style={{ color: "red" }}>
+                  8 to 10 characters including alphabets , numbers, and special
+                  characters
+                </small>
+              )}
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                value={pwd}
+                onChange={(e) => setPwd(e.target.value)}
+              />
+            </Col>
+            <Col sm={{ span: 10, offset: 2 }}>
+              <Button
+                type="submit"
+                disabled={!validPwd}
+                variant={validPwd ? "primary" : "secondary"}
+              >
+                Change Password
+              </Button>
+            </Col>
+          </Form.Group>
+        </Form>
 
-      {/*  */}
-      <Form onSubmit={handleGroupsSubmit}>
-        <Form.Group as={Row} className="mb-3" controlId="formHorizontalGroups">
-          <Form.Label column sm={2}>
-            Add Groups
-          </Form.Label>
-          <Col sm={10}>
-            <Select
-              name="groups"
-              isMulti={true}
-              value={groups}
-              options={filteredOptions}
-              onChange={handleOptionsChange}
-            />
-          </Col>
-          <Col sm={{ span: 10, offset: 2 }}>
-            <Button
-              type="submit"
-              disabled={!groups.length}
-              variant={groups.length ? "primary" : "secondary"}
-            >
+        {/*  */}
+        <Form onSubmit={handleGroupsSubmit}>
+          <Form.Group
+            as={Row}
+            className="mb-3"
+            controlId="formHorizontalGroups"
+          >
+            <Form.Label column sm={2}>
               Add Groups
-            </Button>
-          </Col>
-        </Form.Group>
-      </Form>
-      {/*  */}
+            </Form.Label>
+            <Col sm={10}>
+              <Select
+                name="groups"
+                isMulti={true}
+                value={groups}
+                options={filteredOptions}
+                onChange={handleOptionsChange}
+              />
+            </Col>
+            <Col sm={{ span: 10, offset: 2 }}>
+              <Button
+                type="submit"
+                disabled={!groups.length}
+                variant={groups.length ? "primary" : "secondary"}
+              >
+                Add Groups
+              </Button>
+            </Col>
+          </Form.Group>
+        </Form>
+      </section>
     </>
   );
 };

@@ -47,7 +47,9 @@ const ChangePassword = () => {
         }
       );
 
-      console.log("resposnse", response);
+      alert("passwword successfully updated");
+      setPwd("");
+      setMatchPwd("");
     } catch (error) {
       if (!error.response) {
         setErrMsg("No server response");

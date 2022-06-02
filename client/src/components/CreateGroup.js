@@ -5,9 +5,13 @@ import axios from "../api/axios";
 const CHECK_USERNAME_URL = "group/check/";
 const CREATE_GROUP_URL = "group/createGroup";
 
-const CreateGroup = () => {
+const CreateGroup = ({ success, setSuccess }) => {
   const [groupName, setGroupName] = useState("");
   const [errMsg, setErrMsg] = useState("");
+
+  const buttonText =
+    !errMsg && !groupName ? "Disable Account" : "Enable Account";
+  const buttonVariant = !errMsg && !groupName ? "danger" : "success";
 
   //checking if username is available
   useEffect(() => {
@@ -21,7 +25,7 @@ const CreateGroup = () => {
         setErrMsg("");
       }
     })();
-  }, [groupName]);
+  }, [groupName, success]);
 
   //handle submit function
   async function handleSubmit(e) {
@@ -36,8 +40,10 @@ const CreateGroup = () => {
         }
       );
       setGroupName("");
+      setSuccess(true);
       alert("Successfully created the group");
     } catch (error) {
+      setSuccess(false);
       alert("error");
     }
   }
@@ -48,7 +54,7 @@ const CreateGroup = () => {
       <h2>Create New Group</h2>
       <br />
       <Form onSubmit={handleSubmit}>
-        <Form.Text className=" text-danger">{errMsg}</Form.Text>
+        {groupName && <Form.Text className=" text-danger">{errMsg}</Form.Text>}
         <Form.Group
           as={Row}
           className="mb-3"
@@ -68,8 +74,8 @@ const CreateGroup = () => {
           <Col sm={{ span: 10, offset: 2 }}>
             <Button
               type="submit"
-              disabled={errMsg}
-              variant={!errMsg ? "primary" : "secondary"}
+              disabled={errMsg || !groupName}
+              variant={!errMsg || !groupName ? "primary" : "secondary"}
             >
               Submit
             </Button>

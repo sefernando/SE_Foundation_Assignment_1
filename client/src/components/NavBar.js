@@ -34,9 +34,9 @@ const NavBar = () => {
                 <NavDropdown.Item as={NavLink} to="createUser">
                   Create
                 </NavDropdown.Item>
-                <NavDropdown.Item as={NavLink} to="editUser">
+                {/* <NavDropdown.Item as={NavLink} to="editUser">
                   Edit
-                </NavDropdown.Item>
+                </NavDropdown.Item> */}
               </NavDropdown>
             )}
 
