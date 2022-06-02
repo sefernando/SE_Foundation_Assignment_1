@@ -39,11 +39,21 @@ const NavBar = () => {
                 </NavDropdown.Item> */}
               </NavDropdown>
             )}
-
-            <Button variant="outline-danger" onClick={handleClick}>
-              Logout
-            </Button>
           </Nav>
+        </Navbar.Collapse>
+
+        <Navbar.Collapse className="justify-content-end">
+          <Navbar.Text className="mx-3">
+            Signed in as: <a href="#login">Mark Otto</a>
+          </Navbar.Text>
+
+          <Button
+            className="mx-3"
+            variant="outline-danger"
+            onClick={handleClick}
+          >
+            Logout
+          </Button>
         </Navbar.Collapse>
       </Container>
     </Navbar>
