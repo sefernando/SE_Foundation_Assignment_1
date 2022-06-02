@@ -2,7 +2,7 @@ import { Alert } from "react-bootstrap";
 
 function success(message, options) {
   console.log("alert called");
-  //alert("jdkjf");
+
   return (
     <Alert key="1" variant="success">
       success!

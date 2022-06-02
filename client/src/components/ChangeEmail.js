@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useContext } from "react";
+import { Form, Col, Row, Button } from "react-bootstrap";
 import axios from "../api/axios";
 
 import AuthContext from "../context/AuthProvider";
@@ -50,7 +51,48 @@ const ChangeEmail = () => {
   };
 
   return (
-    <section>
+    <>
+      <section>
+        <p className="errMsg">{errMsg}</p>
+        <h2>Change Email</h2>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+            <Form.Label column sm={2}>
+              Email
+            </Form.Label>
+            <Col sm={10}>
+              <Form.Control
+                type="email"
+                placeholder="Email"
+                ref={emailRef}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+
+              {email && !validEmail && (
+                <small style={{ color: "red" }}>Enter a valid email</small>
+              )}
+              {email == auth.email && (
+                <small style={{ color: "red" }}>Enter a different email</small>
+              )}
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} className="mb-3">
+            <Col sm={{ span: 10, offset: 2 }}>
+              <Button
+                type="submit"
+                disabled={!validEmail}
+                variant={validEmail ? "primary" : "secondary"}
+              >
+                Sign in
+              </Button>
+            </Col>
+          </Form.Group>
+        </Form>
+      </section>
+
+      {/* <section>
       <p className="errMsg">{errMsg}</p>
       <h2>Change Email</h2>
       <form onSubmit={handleSubmit}>
@@ -73,7 +115,8 @@ const ChangeEmail = () => {
         </div>
         <button>Submit</button>
       </form>
-    </section>
+    </section> */}
+    </>
   );
 };
 
