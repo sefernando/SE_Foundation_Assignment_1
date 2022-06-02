@@ -4,5 +4,6 @@
 }
 
 .group-items{
-  text-align: center;
+  text-align: left;
+  margin: auto 10px;
 }

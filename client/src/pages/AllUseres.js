@@ -44,7 +44,7 @@ const AllUseres = () => {
   return (
     <>
       <div className="group-wrapper">
-        <div className="group-item">
+        <div className="group-search">
           <InputGroup className="mb-3">
             <FormControl
               placeholder="Search user"
@@ -53,7 +53,7 @@ const AllUseres = () => {
             />
           </InputGroup>
         </div>
-        <div className="group-item">
+        <div className="group-items">
           <ListGroup>
             {filteredUsers?.map((user) => (
               <ListGroup.Item action onClick={handleClick} key={user.userName}>
