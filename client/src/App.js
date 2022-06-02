@@ -13,6 +13,7 @@ import NavBar from "./components/NavBar";
 import AllUseres from "./pages/AllUseres";
 import EditUser from "./pages/EditUser";
 import CreateNew from "./pages/CreateNew";
+import Apps from "./pages/Apps";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -37,6 +38,9 @@ function App() {
           path="/createUser"
           element={auth.isAuthorized ? <CreateNew /> : <HOME />}
         />
+
+        <Route path="/apps" element={auth.isAuthorized ? <Apps /> : <HOME />} />
+
         <Route
           path="/editUser/:userName"
           element={auth.isAuthorized ? <EditUser /> : <HOME />}

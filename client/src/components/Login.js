@@ -50,7 +50,7 @@ const Login = () => {
       console.log("printing auth", auth.isAuthorized);
       setUserName("");
       setPassword("");
-      navigate("/UserManagement");
+      navigate("/apps");
     } catch (error) {
       if (!error.response) {
         setErrMsg("No server response");

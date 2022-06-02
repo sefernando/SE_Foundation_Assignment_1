@@ -19,8 +19,8 @@ const NavBar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={NavLink} to="/">
-              Home
+            <Nav.Link as={NavLink} to="/apps">
+              Applications
             </Nav.Link>
             <Nav.Link as={NavLink} to="/UserManagement">
               User Management
@@ -43,12 +43,19 @@ const NavBar = () => {
         </Navbar.Collapse>
 
         <Navbar.Collapse className="justify-content-end">
-          <Navbar.Text className="mx-3">
-            Signed in as: <a href="#login">Mark Otto</a>
+          <Navbar.Text className="mx-1">
+            Signed in as:
+            <Nav.Link
+              className="d-inline text-decoration-underline text-primary"
+              as={NavLink}
+              to="UserManagement"
+            >
+              {auth.userName}
+            </Nav.Link>
           </Navbar.Text>
 
           <Button
-            className="mx-3"
+            className="mx-1"
             variant="outline-danger"
             onClick={handleClick}
           >

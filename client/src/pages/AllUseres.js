@@ -3,6 +3,8 @@ import { ListGroup, InputGroup, FormControl } from "react-bootstrap";
 import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
+import "../CSS/AllUsers.css";
+
 const FETCH_USERS_URL = "user/getAllUsers";
 
 const AllUseres = () => {
@@ -41,25 +43,26 @@ const AllUseres = () => {
 
   return (
     <>
-      <br />
-      <h2>All Users</h2>
-      <hr />
-
-      <InputGroup className="mb-3">
-        <FormControl
-          placeholder="Search user"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-        />
-      </InputGroup>
-
-      <ListGroup>
-        {filteredUsers?.map((user) => (
-          <ListGroup.Item action onClick={handleClick} key={user.userName}>
-            {user.userName}
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
+      <div className="group-wrapper">
+        <div className="group-item">
+          <InputGroup className="mb-3">
+            <FormControl
+              placeholder="Search user"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+            />
+          </InputGroup>
+        </div>
+        <div className="group-item">
+          <ListGroup>
+            {filteredUsers?.map((user) => (
+              <ListGroup.Item action onClick={handleClick} key={user.userName}>
+                {user.userName}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </div>
+      </div>
     </>
   );
 };
