@@ -1,4 +1,4 @@
-import { Button, Form, Row, Col } from "react-bootstrap";
+import { Button, Form, Row, Col, ButtonGroup } from "react-bootstrap";
 import axios from "../api/axios";
 import { useContext, useState, useEffect } from "react";
 import AuthContext from "../context/AuthProvider";
@@ -308,6 +308,37 @@ const EditUser = () => {
               <Button variant={buttonVariant} type="submit">
                 {buttonText}
               </Button>
+            </Col>
+          </Form.Group>
+        </Form>
+
+        <Form>
+          <Form.Group
+            as={Row}
+            className="mb-3"
+            controlId="formHorizontalGroups"
+          >
+            <Form.Label column sm={2}>
+              Groups
+            </Form.Label>
+            <Col sm={10}>
+              <ButtonGroup aria-label="Basic example">
+                {user?.groups?.map((group) => (
+                  <Button
+                    style={{
+                      backgroundColor: "#e7e7e7",
+                      color: "black",
+                      fontWeight: 600,
+                      borderRadius: "10px",
+                    }}
+                    key={group}
+                    className={"me-1"}
+                    disabled
+                  >
+                    {group}
+                  </Button>
+                ))}
+              </ButtonGroup>
             </Col>
           </Form.Group>
         </Form>
