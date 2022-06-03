@@ -14,7 +14,7 @@ const GET_GROUPS_URL = "/group/getAllGroups";
 
 let existingGroups = [];
 
-const Register = ({ success, setSuccess }) => {
+const CreateUser = ({ success, setSuccess }) => {
   // const [user, setUser] = useState({});
   // const [userAvailable, setUserAvailable] = useState(false);
   const [allGroups, setAllGroups] = useState([]);
@@ -281,99 +281,7 @@ const Register = ({ success, setSuccess }) => {
         </Form>
       </section>
     </>
-
-    // ///////////////////////////////////////////
-    // <section>
-    //   <p className="errMsg">{errMsg}</p>
-    //   <h2>Create New user</h2>
-    //   <br />
-    //   <form onSubmit={handleSubmit}>
-    //     <div>
-    //       <label htmlFor="username">Username</label>
-    //       <input
-    //         type="text"
-    //         name="username"
-    //         id="username"
-    //         autoComplete="off"
-    //         value={userName}
-    //         onChange={(e) => setUserName(e.target.value)}
-    //         ref={userRef}
-    //       />
-    //       {userName && !validUserName && (
-    //         <small style={{ color: "red" }}>
-    //           Minimun 4 charactors are required
-    //         </small>
-    //       )}
-    //       {userName && validUserName && !availableUserName && (
-    //         <small style={{ color: "red" }}>Username is not available</small>
-    //       )}
-    //     </div>
-
-    //     <div>
-    //       <label htmlFor="email">Email</label>
-    //       <input
-    //         type="email"
-    //         name="email"
-    //         id="email"
-    //         autoComplete="off"
-    //         value={email}
-    //         onChange={(e) => setEmail(e.target.value)}
-    //       />
-    //       {email && !validEmail && (
-    //         <small style={{ color: "red" }}>Please enter a valid email</small>
-    //       )}
-    //     </div>
-
-    //     <div>
-    //       <label htmlFor="password">Password</label>
-    //       <input
-    //         type="password"
-    //         name="password"
-    //         id="password"
-    //         value={pwd}
-    //         onChange={(e) => setPwd(e.target.value)}
-    //       />
-    //       {pwd && !validPwd && (
-    //         <small style={{ color: "red" }}>
-    //           8 to 10 characters.
-    //           <br />
-    //           Must include uppercase, lowercase letters, a number and a special
-    //           character.
-    //           <br />{" "}
-    //         </small>
-    //       )}
-    //     </div>
-
-    //     <div>
-    //       <label htmlFor="matchpassword">Confirm Password</label>
-    //       <input
-    //         type="password"
-    //         name="matchpassword"
-    //         id="matchpassword"
-    //         value={matchPwd}
-    //         onChange={(e) => setMatchPwd(e.target.value)}
-    //       />
-    //       {matchPwd && !validMatch && (
-    //         <small style={{ color: "red" }}>Password mismatch</small>
-    //       )}
-    //     </div>
-
-    //     <div>
-    //       <label htmlFor="groups">Groups</label>
-
-    //       <Select
-    //         name="groups"
-    //         isMulti={true}
-    //         value={groups}
-    //         options={options}
-    //         onChange={handleChange}
-    //       />
-    //     </div>
-
-    //     <button>Submit</button>
-    //   </form>
-    // </section>
   );
 };
 
-export default Register;
+export default CreateUser;

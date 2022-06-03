@@ -12,14 +12,20 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.belongsToMany(User, {
         through: "Users_Groups",
-        foreignKey: "groupId",
+        foreignKey: "groupName",
         timestamps: false,
       });
     }
   }
   Group.init(
     {
-      groupName: { type: DataTypes.STRING, allowNull: false, unique: true },
+      groupName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        autoIncrement: false,
+        primaryKey: true,
+      },
     },
     {
       sequelize,

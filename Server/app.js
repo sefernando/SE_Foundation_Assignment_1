@@ -31,6 +31,6 @@ app.use("/group", groupRoute);
 app.listen(PORT, async () => {
   // await User.sync({ alter: true });
   // await Group.sync({ alter: true });
-  // await sequelize.sync({ alter: true });
+  // await sequelize.sync({ force: true });
   console.log("app listen at port 5000");
 });

@@ -1,13 +1,15 @@
 import { Navbar, Nav, NavDropdown, Container, Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import AuthContext from "../context/AuthProvider";
+import axios from "../api/axios";
 
 const NavBar = () => {
   const { auth, setAuth } = useContext(AuthContext);
 
+  console.log("auth", auth);
   function handleClick() {
     setAuth({});
   }
@@ -22,21 +24,22 @@ const NavBar = () => {
             <Nav.Link as={NavLink} to="/apps">
               Applications
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/UserManagement">
+            {/* <Nav.Link as={NavLink} to="/UserManagement">
               User Management
-            </Nav.Link>
+            </Nav.Link> */}
 
-            {auth.groups?.includes("admin") && (
-              <NavDropdown title="Admin" id="basic-nav-dropdown">
-                <NavDropdown.Item as={NavLink} to="allUsers">
-                  All Users
+            {/* auth.groups?.includes("admin") */}
+            {auth.isAdmin && (
+              <NavDropdown title="User Management" id="admin-nav-dropdown">
+                <NavDropdown.Item as={NavLink} to="editUsers">
+                  Edit User
                 </NavDropdown.Item>
                 <NavDropdown.Item as={NavLink} to="createUser">
-                  Create
+                  Create User
                 </NavDropdown.Item>
-                {/* <NavDropdown.Item as={NavLink} to="editUser">
-                  Edit
-                </NavDropdown.Item> */}
+                <NavDropdown.Item as={NavLink} to="createGroup">
+                  Create Group
+                </NavDropdown.Item>
               </NavDropdown>
             )}
           </Nav>
@@ -45,13 +48,21 @@ const NavBar = () => {
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text className="mx-1">
             Signed in as:
-            <Nav.Link
+            <NavDropdown title={auth.userName} id="user-nav-dropdown">
+              <NavDropdown.Item as={NavLink} to="changeEmail">
+                Change Email
+              </NavDropdown.Item>
+              <NavDropdown.Item as={NavLink} to="changePassword">
+                Change Password
+              </NavDropdown.Item>
+            </NavDropdown>
+            {/* <Nav.Link
               className="d-inline text-decoration-underline text-primary"
               as={NavLink}
               to="UserManagement"
             >
               {auth.userName}
-            </Nav.Link>
+            </Nav.Link> */}
           </Navbar.Text>
 
           <Button

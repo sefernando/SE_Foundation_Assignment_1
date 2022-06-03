@@ -6,6 +6,35 @@ const jwt = require("jsonwebtoken");
 const privateKey = process.env.TOKEN_SECRET;
 const options = { expiresIn: process.env.TOKEN_EXPIRE };
 
+//////////////////////////////////////////////////////////////
+//check if user is in a group --------------------------------
+async function checkGroup(userName, groupName) {
+  const user = await User.findOne({
+    where: { userName },
+    include: [
+      {
+        model: Group,
+        attributes: ["groupName"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
+  });
+
+  if (!user) {
+    return false;
+  }
+
+  const userGroups = user.Groups.map((x) => x.groupName);
+
+  if (userGroups.includes(groupName)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 /////////////////////////////////////////////////////////////////////////////
 //signup ---------------------------------------------------------------------
 async function signUp(req, res) {
@@ -13,15 +42,9 @@ async function signUp(req, res) {
   const pwd = req.body.password;
   let userWithGroup;
 
-  //check if the user already exist
-  // const userByEmail = await User.findOne({ where: { email: req.body.email } });
-  // const userByUserName = await User.findOne({
-  //   where: { user_name: req.body.userName },
-  // });
-
   const existingUser = await User.findOne({
     where: {
-      [Op.or]: [{ email: req.body.email }, { user_name: req.body.userName }],
+      [Op.or]: [{ email: req.body.email }, { userName: req.body.userName }],
     },
   });
 
@@ -39,7 +62,7 @@ async function signUp(req, res) {
 
   //saving user to DB
   let user = await User.create({
-    user_name: req.body.userName,
+    userName: req.body.userName,
     email: req.body.email,
     password: hashPassword,
   });
@@ -57,7 +80,7 @@ async function signUp(req, res) {
 
   //fetching all data for the new user
   let newUser = await User.findOne({
-    where: { user_name: req.body.userName },
+    where: { userName: req.body.userName },
     include: [
       {
         model: Group,
@@ -72,7 +95,7 @@ async function signUp(req, res) {
 
   //creating jwt token
   const payLoad = {
-    userName: newUser.user_name,
+    userName: newUser.userName,
     active: newUser.isActive,
     groups: newUser.Groups.map((group) => group.groupName),
   };
@@ -94,7 +117,7 @@ async function signUp(req, res) {
 async function signIn(req, res) {
   //checking the existing user
   const user = await User.findOne({
-    where: { user_name: req.body.userName },
+    where: { userName: req.body.userName },
     include: [
       {
         model: Group,
@@ -117,9 +140,12 @@ async function signIn(req, res) {
     return res.status(400).json({ error: "Invalid credentials" });
   }
 
+  //checking if the user is admin
+  const isAdmin = await checkGroup(user.userName, "admin");
+
   //creating and sending jwt token
   const payLoad = {
-    userName: user.user_name,
+    userName: user.userName,
     email: user.email,
     active: user.isActive,
     groups: user.Groups.map((group) => group.groupName),
@@ -134,10 +160,11 @@ async function signIn(req, res) {
       return res.status(200).json({
         msg: "Login successfull",
         token,
-        userName: user.user_name,
+        userName: user.userName,
         email: user.email,
-        groups: user.Groups.map((group) => group.groupName),
         active: user.isActive,
+        isAdmin: isAdmin,
+        groups: user.Groups.map((group) => group.groupName),
       });
     }
   });
@@ -147,102 +174,14 @@ async function signIn(req, res) {
 //check user name-----------------------------------------------------------
 async function checkUserName(req, res) {
   const user = await User.findOne({
-    where: { user_name: req.params.userName },
+    where: { userName: req.params.userName },
   });
   if (user) {
-    return res.status(200).json({ user: user.user_name });
+    return res.status(200).json({ user: user.userName });
   } else {
     return res.status(200).json({ user: null });
   }
 }
-
-// /////////////////////////////////////////////////////////////////////////////
-// //change password -----------------------------------------------------------
-// async function changePassword(req, res) {
-//   const saltRounds = 10;
-//   let hashPassword;
-//   const { userName, password } = req.body;
-
-//   const PWD_REGEX =
-//     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/;
-
-//   if (!PWD_REGEX.test(password)) {
-//     return res.status(400).json({ error: "Invalid credentials" });
-//   }
-
-//   //hashing password
-//   if (password) {
-//     hashPassword = await bcryptjs.hash(password, saltRounds);
-//   } else {
-//     return res.status(400).json({ error: "User not found" });
-//   }
-
-//   //updating database
-//   try {
-//     const updatedUser = await User.update(
-//       { password: hashPassword },
-//       {
-//         where: { user_name: userName },
-//       }
-//     );
-
-//     if (updatedUser[0] === 0) {
-//       res.status(500).json({ error: "User not found" });
-//     } else {
-//       res.status(200).json({ msg: "Password updated successfully" });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ error: "Server error" });
-//   }
-// }
-
-// ////////////////////////////////////////////////////////////////////////
-// //change email --------------------------------------------------------
-// async function changeEmail(req, res) {
-//   const { userName, email } = req.body;
-
-//   try {
-//     console.log(userName, email);
-//     const updatedUser = await User.update(
-//       { email },
-//       {
-//         where: { user_name: userName },
-//       }
-//     );
-
-//     if (updatedUser[0] === 0) {
-//       res.status(500).json({ error: "user not found" });
-//     } else {
-//       res.status(200).json({ msg: "Email updated successfully" });
-//     }
-//   } catch (error) {
-//     console.log("reach catch");
-//     res.status(500).json({ error: "server error" });
-//   }
-// }
-
-// ////////////////////////////////////////////////////////////////////////
-// //disable user --------------------------------------------------------
-// async function disableUser(req, res) {
-//   const { groups, userName } = req.body;
-
-//   const isAdmin = groups.includes("admin");
-
-//   if (!isAdmin) {
-//     res.status(401).json({ error: "Unauthorized" });
-//   }
-
-//   const user = await User.update(
-//     { isActive: false },
-//     { where: { user_name: userName } }
-//   );
-
-//   if (user[0] === 0) {
-//     res.status(500).json({ error: "user not found" });
-//   } else {
-//     res.status(200).json({ msg: "successfully disabled the user" });
-//   }
-// }
 
 // < ---------------------------------------------->
 module.exports = {

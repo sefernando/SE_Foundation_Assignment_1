@@ -128,49 +128,6 @@ const ChangePassword = () => {
           </Form.Group>
         </Form>
       </section>
-
-      {/* <section>
-        <p className="errMsg">{errMsg}</p>
-        <h2>Change password</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="password"> Password</label>
-            <input
-              type="password"
-              name="password"
-              id="pwdchange"
-              value={pwd}
-              ref={emailRef}
-              onChange={(e) => setPwd(e.target.value)}
-            />
-            {pwd && !validPwd && (
-              <small style={{ color: "red" }}>
-                8 to 10 characters.
-                <br />
-                Must include uppercase, lowercase letters, a number and a
-                special character.
-                <br />{" "}
-              </small>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="matchpassword">Confirm Password</label>
-            <input
-              type="password"
-              name="matchpassword"
-              id="matchpwdchage"
-              value={matchPwd}
-              onChange={(e) => setMatchPwd(e.target.value)}
-            />
-            {matchPwd && !validMatch && (
-              <small style={{ color: "red" }}>Password mismatch</small>
-            )}
-          </div>
-
-          <button>Submit</button>
-        </form>
-      </section> */}
     </>
   );
 };

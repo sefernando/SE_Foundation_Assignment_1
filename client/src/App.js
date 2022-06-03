@@ -6,13 +6,14 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import AuthContext from "./context/AuthProvider";
 
 import HOME from "./pages/Home";
-import Admin from "./pages/Admin";
-import UserManagement from "./pages/UserManagement";
 import ErrorPage from "./pages/ErrorPage";
 import NavBar from "./components/NavBar";
-import AllUseres from "./pages/AllUseres";
+import EditUsers from "./pages/EditUsers";
 import EditUser from "./pages/EditUser";
-import CreateNew from "./pages/CreateNew";
+import CreateGroup from "./pages/CreateGroup";
+import CreateUser from "./pages/CreateUser";
+import ChangePassword from "./pages/ChangePassword";
+import ChangeEmail from "./pages/ChangeEmail";
 import Apps from "./pages/Apps";
 
 function App() {
@@ -26,17 +27,16 @@ function App() {
         <Route path="/" element={<HOME />} />
 
         <Route
-          path="/UserManagement"
-          element={auth.isAuthorized ? <UserManagement /> : <HOME />}
-        />
-
-        <Route
-          path="/allUsers"
-          element={auth.isAuthorized ? <AllUseres /> : <HOME />}
+          path="/editUsers"
+          element={auth.isAuthorized ? <EditUsers /> : <HOME />}
         />
         <Route
           path="/createUser"
-          element={auth.isAuthorized ? <CreateNew /> : <HOME />}
+          element={auth.isAuthorized ? <CreateUser /> : <HOME />}
+        />
+        <Route
+          path="/createGroup"
+          element={auth.isAuthorized ? <CreateGroup /> : <HOME />}
         />
 
         <Route path="/apps" element={auth.isAuthorized ? <Apps /> : <HOME />} />
@@ -44,6 +44,16 @@ function App() {
         <Route
           path="/editUser/:userName"
           element={auth.isAuthorized ? <EditUser /> : <HOME />}
+        />
+
+        <Route
+          path="/changeEmail"
+          element={auth.isAuthorized ? <ChangeEmail /> : <HOME />}
+        />
+
+        <Route
+          path="/changePassword"
+          element={auth.isAuthorized ? <ChangePassword /> : <HOME />}
         />
 
         <Route path="*" element={<ErrorPage />} />

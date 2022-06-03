@@ -1,4 +1,4 @@
-const { Group } = require("../models");
+const { Group, User } = require("../models");
 
 //////////////////////////////////////////////////////////////
 //create group function -------------------------------------
@@ -38,7 +38,7 @@ async function getAllGroups(req, res) {
 
 //////////////////////////////////////////////////////////////
 //check if group name available-------------------------------
-async function checkGroup(req, res) {
+async function checkGroupName(req, res) {
   try {
     const groupName = req.query.groupName;
     console.log("gn", groupName);
@@ -54,5 +54,37 @@ async function checkGroup(req, res) {
   }
 }
 
+//////////////////////////////////////////////////////////////
+//check if user is in a group --------------------------------
+async function checkGroup(req, res) {
+  const userName = req.query.userName;
+  const groupName = req.query.groupName;
+
+  const user = await User.findOne({
+    where: { userName },
+    include: [
+      {
+        model: Group,
+        attributes: ["groupName"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
+  });
+
+  if (!user) {
+    return res.status(400).json({ msg: "User not available" });
+  }
+
+  const userGroups = user.Groups.map((x) => x.groupName);
+
+  if (userGroups.includes(groupName)) {
+    res.status(200).json({ msg: "user is in the group" });
+  } else {
+    res.status(404).json({ msg: "user is not in the group" });
+  }
+}
+
 //---------------------------------------------------------------------------
-module.exports = { createGroup, getAllGroups, checkGroup };
+module.exports = { createGroup, getAllGroups, checkGroupName, checkGroup };

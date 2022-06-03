@@ -91,31 +91,6 @@ const ChangeEmail = () => {
           </Form.Group>
         </Form>
       </section>
-
-      {/* <section>
-      <p className="errMsg">{errMsg}</p>
-      <h2>Change Email</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="chnageEmai">Email</label>
-          <input
-            type="email"
-            name="changeEmail"
-            id="changeEmail"
-            ref={emailRef}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          {email && !validEmail && (
-            <small style={{ color: "red" }}>Enter a valid email</small>
-          )}
-          {email == auth.email && (
-            <small style={{ color: "red" }}>Enter a different email</small>
-          )}
-        </div>
-        <button>Submit</button>
-      </form>
-    </section> */}
     </>
   );
 };

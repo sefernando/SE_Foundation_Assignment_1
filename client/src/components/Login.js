@@ -6,6 +6,8 @@ import axios from "../api/axios";
 import AuthContext from "../context/AuthProvider";
 import "../CSS/Login.css";
 
+const CHECK_GROUP = "group/checkGroup/";
+
 const Login = () => {
   const navigate = useNavigate();
 
@@ -16,6 +18,7 @@ const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  // const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     userRef.current.focus();
@@ -24,6 +27,21 @@ const Login = () => {
   useEffect(() => {
     setErrMsg("");
   }, [userName, password]);
+
+  //checking if user is admin
+  // async function checkAdmin(userName, groupName) {
+  //   try {
+  //     const response = await axios.get(CHECK_GROUP, {
+  //       params: { userName, groupName },
+  //     });
+  //     console.log("admin");
+
+  //     setIsAdmin(true);
+  //   } catch (error) {
+  //     console.log("not admin");
+  //     setIsAdmin(false);
+  //   }
+  // }
 
   //handle submit function
   const handleSubmit = async (e) => {
@@ -39,10 +57,17 @@ const Login = () => {
         }
       );
 
-      const { token, groups, active, email } = response?.data;
+      const { token, groups, active, email, isAdmin } = response?.data;
 
       if (active) {
-        setAuth({ userName, email, token, groups, isAuthorized: true });
+        setAuth({
+          userName,
+          email,
+          token,
+          groups,
+          isAuthorized: true,
+          isAdmin,
+        });
       } else {
         alert("Your account is disabled. Please contact system admin");
       }

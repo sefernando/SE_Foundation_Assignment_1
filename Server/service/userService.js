@@ -10,7 +10,7 @@ async function getUser(req, res) {
 
   try {
     const user = await User.findOne({
-      where: { user_name: userName },
+      where: { userName },
       include: [
         {
           model: Group,
@@ -27,7 +27,7 @@ async function getUser(req, res) {
 
       res.status(200).json({
         // ...user.dataValues,
-        userName: user.dataValues.user_name,
+        userName: user.dataValues.userName,
         email: user.dataValues.email,
         password: "*******",
         isActive: user.dataValues.isActive,
@@ -67,7 +67,7 @@ async function changePassword(req, res) {
     const updatedUser = await User.update(
       { password: hashPassword },
       {
-        where: { user_name: userName },
+        where: { userName },
       }
     );
 
@@ -91,7 +91,7 @@ async function changeEmail(req, res) {
     const updatedUser = await User.update(
       { email },
       {
-        where: { user_name: userName },
+        where: { userName },
       }
     );
 
@@ -120,7 +120,7 @@ async function changeAccStatus(req, res) {
 
   const user = await User.update(
     { isActive: isActive },
-    { where: { user_name: userName } }
+    { where: { userName } }
   );
 
   if (user[0] === 0) {
@@ -136,7 +136,7 @@ async function addToGroup(req, res) {
   let newUser;
   // const user = await User.findByPk(req.body.userName);
   const user = await User.findOne({
-    where: { user_name: req.body.userName },
+    where: { userName: req.body.userName },
     include: [
       {
         model: Group,
@@ -155,7 +155,7 @@ async function addToGroup(req, res) {
 
   //check group function
   function checkGroup(userName, groupName) {
-    if (userName === user.user_name) {
+    if (userName === user.userName) {
       user.Groups.forEach((group) => {
         return group.groupName === groupName;
       });
@@ -188,7 +188,7 @@ async function addToGroup(req, res) {
 async function getAllUsers(req, res) {
   try {
     const users = await User.findAll({
-      attributes: [["user_name", "userName"], "isActive"],
+      attributes: ["userName", "isActive"],
       // include: [
       //   {
       //     model: Group,
@@ -203,15 +203,7 @@ async function getAllUsers(req, res) {
     if (users) {
       // console.log("get user", users);
 
-      res.status(200).json({
-        users,
-        // ...user.dataValues,
-        // userName: user.dataValues.user_name,
-        // email: user.dataValues.email,
-        // password: "*******",
-        // isActive: user.dataValues.isActive,
-        // groups: user.Groups.map((group) => group.groupName),
-      });
+      res.status(200).json({ users });
     } else {
       res.status(400).json({ error: "User Not Found" });
     }
