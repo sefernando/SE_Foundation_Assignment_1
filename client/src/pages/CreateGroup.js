@@ -5,7 +5,7 @@ import axios from "../api/axios";
 const CHECK_USERNAME_URL = "group/check/";
 const CREATE_GROUP_URL = "group/createGroup";
 
-const CreateGroup = ({ success, setSuccess }) => {
+const CreateGroup = () => {
   const [groupName, setGroupName] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
@@ -25,7 +25,7 @@ const CreateGroup = ({ success, setSuccess }) => {
         setErrMsg("");
       }
     })();
-  }, [groupName, success]);
+  }, [groupName]);
 
   //handle submit function
   async function handleSubmit(e) {
@@ -40,10 +40,8 @@ const CreateGroup = ({ success, setSuccess }) => {
         }
       );
       setGroupName("");
-      setSuccess(true);
       alert("Successfully created the group");
     } catch (error) {
-      setSuccess(false);
       alert("error");
     }
   }

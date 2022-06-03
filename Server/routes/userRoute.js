@@ -9,6 +9,7 @@ const {
   changeEmail,
   changePassword,
   addToGroup,
+  removeFromGroup,
 } = require("../service/userService");
 
 // routes--------------------------------------------------------
@@ -18,5 +19,6 @@ router.put("/changePassword", auth, changePassword); //
 router.put("/changeEmail", auth, changeEmail);
 router.put("/changeAccStatus", auth, changeAccStatus);
 router.put("/addToGroup", auth, addToGroup);
+router.put("/removeFromGroup", auth, removeFromGroup);
 
 module.exports = router;

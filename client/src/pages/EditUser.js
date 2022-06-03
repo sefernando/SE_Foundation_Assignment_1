@@ -11,6 +11,7 @@ const CHANG_ACC_STATUS_URL = "user/changeAccStatus";
 const CHANGE_EMAIL_URL = "user/changeEmail";
 const CHANGE_PWD_URL = "user/changePassword";
 const ADD_TO_GROUP_URL = "user/addToGroup";
+const REMOVE_FROM_GROUP_URL = "user/removeFromGroup";
 const GET_GROUPS_URL = "/group/getAllGroups";
 const GET_USER_URL = "/user/getUser/";
 
@@ -29,8 +30,11 @@ const EditUser = () => {
   const [successAlt, setSuccessAlt] = useState(false);
   const [errAlt, setErrAlert] = useState(false);
 
-  const [groups, setGroups] = useState([]);
-  const [options, setOptions] = useState([]);
+  const [addGroups, setAddGroups] = useState([]);
+  const [addOptions, setAddOptions] = useState([]);
+
+  const [removeGroups, setRemoveGroups] = useState([]);
+  const [removeOptions, setRemoveOptions] = useState([]);
 
   const [email, setEmail] = useState("");
   const [validEmail, setValidEmail] = useState(false);
@@ -79,7 +83,7 @@ const EditUser = () => {
         existingGroups.forEach((group) => {
           prepareOptions.push({ value: group, label: group });
         });
-        setOptions(prepareOptions);
+        setAddOptions(prepareOptions);
       } catch (error) {
         console.log(error);
       }
@@ -95,9 +99,14 @@ const EditUser = () => {
     }
   }
 
-  //preparing options for new group info
-  const filteredOptions = options.filter(
+  //preparing options to add new group info
+  const filteredAddOptions = addOptions.filter(
     (option) => !checkGroup(user.userName, option.value)
+  );
+
+  //preparing options to remove user from groups
+  const filteredRemoveOptions = addOptions.filter((option) =>
+    checkGroup(user.userName, option.value)
   );
 
   //function for admin to enable/disable account
@@ -195,14 +204,20 @@ const EditUser = () => {
     }
   }
 
-  //handleChange function
-  const handleOptionsChange = (selectedOptions) => {
+  //handleChange function to add
+  const handleAddOptionsChange = (selectedOptions) => {
     // let value = Array.from(e.target.selectedOptions, (option) => option.value);
-    setGroups(selectedOptions);
+    setAddGroups(selectedOptions);
+  };
+
+  //handleChange function to remove
+  const handleRemoveOptionsChange = (selectedOptions) => {
+    // let value = Array.from(e.target.selectedOptions, (option) => option.value);
+    setRemoveGroups(selectedOptions);
   };
 
   //handle groups submit button
-  const handleGroupsSubmit = async (e) => {
+  const handleAddGroupsSubmit = async (e) => {
     e.preventDefault();
 
     try {
@@ -211,7 +226,7 @@ const EditUser = () => {
         JSON.stringify({
           userName: user.userName,
           adminUserName: auth.userName,
-          groups: groups.map((x) => x.value),
+          groups: addGroups.map((x) => x.value),
         }),
         {
           headers: {
@@ -224,9 +239,42 @@ const EditUser = () => {
       );
 
       if (response) {
-        setGroups([]);
+        setAddGroups([]);
         setChangeInfo(true);
         alert("User successfully added to new groups");
+      }
+    } catch (error) {
+      alert("Error");
+    }
+  };
+
+  //handle groups submit button
+  const handleRemoveGroupsSubmit = async (e) => {
+    console.log("inside handle remove group submit");
+    e.preventDefault();
+
+    try {
+      const response = await axios.put(
+        REMOVE_FROM_GROUP_URL,
+        JSON.stringify({
+          userName: user.userName,
+          adminUserName: auth.userName,
+          groups: removeGroups.map((x) => x.value),
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": auth.token,
+          },
+
+          withCredentials: true,
+        }
+      );
+
+      if (response) {
+        setRemoveGroups([]);
+        setChangeInfo(true);
+        alert("User successfully removed from groups");
       }
     } catch (error) {
       alert("Error");
@@ -273,6 +321,11 @@ const EditUser = () => {
               {email && !validEmail && (
                 <small style={{ color: "red" }}>Enter a valid email</small>
               )}
+              {email == user.email && (
+                <small style={{ color: "red" }}>
+                  This is user's registered email. Please enter a different one
+                </small>
+              )}
               <Form.Control
                 type="email"
                 placeholder="Enter email"
@@ -283,7 +336,7 @@ const EditUser = () => {
             <Col sm={{ span: 10, offset: 2 }}>
               <Button
                 type="submit"
-                disabled={!validEmail}
+                disabled={!validEmail || email === user.email}
                 variant={validEmail ? "primary" : "secondary"}
               >
                 Change Email
@@ -328,11 +381,11 @@ const EditUser = () => {
         </Form>
 
         {/*  */}
-        <Form onSubmit={handleGroupsSubmit}>
+        <Form onSubmit={handleAddGroupsSubmit}>
           <Form.Group
             as={Row}
             className="mb-3"
-            controlId="formHorizontalGroups"
+            controlId="formHorizontalGroupsAdd"
           >
             <Form.Label column sm={2}>
               Add Groups
@@ -341,18 +394,48 @@ const EditUser = () => {
               <Select
                 name="groups"
                 isMulti={true}
-                value={groups}
-                options={filteredOptions}
-                onChange={handleOptionsChange}
+                value={addGroups}
+                options={filteredAddOptions}
+                onChange={handleAddOptionsChange}
               />
             </Col>
             <Col sm={{ span: 10, offset: 2 }}>
               <Button
                 type="submit"
-                disabled={!groups.length}
-                variant={groups.length ? "primary" : "secondary"}
+                disabled={!addGroups.length}
+                variant={addGroups.length ? "primary" : "secondary"}
               >
                 Add Groups
+              </Button>
+            </Col>
+          </Form.Group>
+        </Form>
+
+        <Form onSubmit={handleRemoveGroupsSubmit}>
+          <Form.Group
+            as={Row}
+            className="mb-3"
+            controlId="formHorizontalGroupsRemove"
+          >
+            <Form.Label column sm={2}>
+              Remove Groups
+            </Form.Label>
+            <Col sm={10}>
+              <Select
+                name="groups"
+                isMulti={true}
+                value={removeGroups}
+                options={filteredRemoveOptions}
+                onChange={handleRemoveOptionsChange}
+              />
+            </Col>
+            <Col sm={{ span: 10, offset: 2 }}>
+              <Button
+                type="submit"
+                disabled={!removeGroups.length}
+                variant={removeGroups.length ? "primary" : "secondary"}
+              >
+                Remove Groups
               </Button>
             </Col>
           </Form.Group>

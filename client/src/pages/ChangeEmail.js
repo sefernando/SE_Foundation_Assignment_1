@@ -24,6 +24,10 @@ const ChangeEmail = () => {
     setValidEmail(EMAIL_REGEX.test(email));
   }, [email]);
 
+  useEffect(() => {
+    setErrMsg(email === auth.email);
+  }, [email]);
+
   //handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,7 +77,9 @@ const ChangeEmail = () => {
                 <small style={{ color: "red" }}>Enter a valid email</small>
               )}
               {email == auth.email && (
-                <small style={{ color: "red" }}>Enter a different email</small>
+                <small style={{ color: "red" }}>
+                  This is your registered email. Please enter a different one
+                </small>
               )}
             </Col>
           </Form.Group>
@@ -82,7 +88,7 @@ const ChangeEmail = () => {
             <Col sm={{ span: 10, offset: 2 }}>
               <Button
                 type="submit"
-                disabled={!validEmail}
+                disabled={!validEmail || errMsg}
                 variant={validEmail ? "primary" : "secondary"}
               >
                 Sign in

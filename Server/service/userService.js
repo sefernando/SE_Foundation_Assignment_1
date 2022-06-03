@@ -184,6 +184,60 @@ async function addToGroup(req, res) {
 }
 
 //////////////////////////////////////////////////////////////
+//remove from group function -------------------------------------
+async function removeFromGroup(req, res) {
+  console.log("remove from groups iinside");
+  let newUser;
+  // const user = await User.findByPk(req.body.userName);
+  const user = await User.findOne({
+    where: { userName: req.body.userName },
+    include: [
+      {
+        model: Group,
+        // as: "groups",
+        attributes: ["groupName"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
+  });
+
+  if (!user) {
+    return res.status(400).json({ error: "user not found" });
+  }
+
+  //check group function
+  function checkGroup(userName, groupName) {
+    if (userName === user.userName) {
+      user.Groups.forEach((group) => {
+        return group.groupName === groupName;
+      });
+    } else {
+      return false;
+    }
+  }
+
+  try {
+    req.body.groups.forEach(async (groupName) => {
+      const group = await Group.findOne({
+        where: { groupName },
+      });
+
+      const userExistingGroups = checkGroup(req.body.userName, groupName);
+
+      if (group && !userExistingGroups) {
+        newUser = await user.removeGroup(group);
+      }
+    });
+
+    res.status(200).json({ msg: "successfully removed from groups" });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+}
+
+//////////////////////////////////////////////////////////////
 //get all users --------------------------------------------
 async function getAllUsers(req, res) {
   try {
@@ -220,4 +274,5 @@ module.exports = {
   changePassword,
   changeAccStatus,
   addToGroup,
+  removeFromGroup,
 };

@@ -14,7 +14,7 @@ const GET_GROUPS_URL = "/group/getAllGroups";
 
 let existingGroups = [];
 
-const CreateUser = ({ success, setSuccess }) => {
+const CreateUser = () => {
   // const [user, setUser] = useState({});
   // const [userAvailable, setUserAvailable] = useState(false);
   const [allGroups, setAllGroups] = useState([]);
@@ -71,7 +71,7 @@ const CreateUser = ({ success, setSuccess }) => {
         console.log(error);
       }
     })();
-  }, [success, validPwd]);
+  }, [validPwd]);
 
   useEffect(() => {
     userRef.current.focus();
