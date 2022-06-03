@@ -6,7 +6,7 @@ import { Form, Button, Row, Col } from "react-bootstrap";
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]{2,}\.[^\s@]{2,}$/;
 const PASSWORD_REGEX =
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/;
-const USER_REGEX = /^\S[0-9a-zA-Z]{3,}$/;
+const USER_REGEX = /^\S[0-9a-zA-Z@&_-]{3,}$/;
 
 const REGISTER_URL = "/auth/signup";
 const CHECK_USERNAME_URL = "/auth/checkUserName";
@@ -71,7 +71,7 @@ const CreateUser = () => {
         console.log(error);
       }
     })();
-  }, [validPwd]);
+  }, []);
 
   useEffect(() => {
     userRef.current.focus();
@@ -269,9 +269,11 @@ const CreateUser = () => {
             <Col sm={{ span: 10, offset: 2 }}>
               <Button
                 type="submit"
-                disabled={!userName || !pwd || !email || !matchPwd}
+                disabled={!userName || !validPwd || !email || !validMatch}
                 variant={
-                  userName && email && pwd && matchPwd ? "primary" : "secondary"
+                  userName && email && validPwd && validMatch
+                    ? "primary"
+                    : "secondary"
                 }
               >
                 Register
