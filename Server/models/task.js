@@ -13,47 +13,47 @@ module.exports = (sequelize, DataTypes) => {
   }
   Task.init(
     {
-      taskName: {
+      name: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
         autoIncrement: false,
         primaryKey: true,
-        field: "Task_name",
+        field: "name",
       },
-      taskDescription: {
+      description: {
         type: DataTypes.STRING(4096),
-        field: "Task_Description",
+        field: "description",
       },
-      taskNotes: {
+      notes: {
         type: DataTypes.TEXT,
-        field: "Task_notes",
+        field: "notes",
         get() {
-          return this.getDataValue("taskNotes").split(";");
+          return this.getDataValue("notes").split(";");
         },
         set(val) {
-          this.setDataValue("taskNotes", val.join(";"));
+          this.setDataValue("notes", val.join(";"));
         },
       },
-      taskId: {
+      id: {
         type: DataTypes.STRING,
-        field: "Task_Id",
+        field: "id",
       },
-      taskState: {
+      state: {
         type: DataTypes.STRING,
-        field: "Task_state",
+        field: "state",
       },
-      taskCreator: {
+      creator: {
         type: DataTypes.STRING,
-        field: "Task_creator",
+        field: "creator",
       },
-      taskOwner: {
+      owner: {
         type: DataTypes.STRING,
-        field: "Task_owner",
+        field: "owner",
       },
-      taskCreateDate: {
+      createDate: {
         type: DataTypes.STRING,
-        field: "Task_createDate",
+        field: "createDate",
       },
     },
     {

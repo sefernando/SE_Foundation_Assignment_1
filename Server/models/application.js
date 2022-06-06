@@ -10,38 +10,40 @@ module.exports = (sequelize, DataTypes) => {
     static associate({ Plan, Task }) {
       // define association here
       this.hasMany(Plan, {
-        foreignKey: "Plan_app_Acronym",
+        foreignKey: "app_acronym",
       });
+
       this.hasMany(Task, {
-        foreignKey: "Task_app_Acronym",
+        foreignKey: "app_acronym",
       });
     }
   }
   Application.init(
     {
-      appAcronym: {
+      acronym: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
         autoIncrement: false,
         primaryKey: true,
-        field: "App_Acronym",
+        field: "acronym",
       },
-      appDescription: {
+      description: {
         type: DataTypes.STRING(4096),
-        field: "App_Description",
+        field: "description",
       },
-      appRnumber: { type: DataTypes.INTEGER, field: "App_Rnumber" },
-      appStartDate: { type: DataTypes.DATEONLY, field: "App_startDate" },
-      appEndDate: { type: DataTypes.DATEONLY, field: "App_endDate" },
+      rNumber: { type: DataTypes.INTEGER, field: "rNumber" },
+      startDate: { type: DataTypes.DATEONLY, field: "startDate" },
+      endDate: { type: DataTypes.DATEONLY, field: "endDate" },
 
-      appPermitOpen: { type: DataTypes.STRING, field: "App_Permit_Open" },
-      appPermitToDoList: {
+      permitOpen: { type: DataTypes.STRING, field: "permit_open" },
+      permitToDoList: {
         type: DataTypes.STRING,
-        field: "App_Permit_toDoList",
+        field: "permit_toDoList",
       },
-      appPermitDoing: { type: DataTypes.STRING, field: "App_Permit_Doing" },
-      appPermitDone: { type: DataTypes.STRING, field: "App_Permit_Done" },
+      permitDoing: { type: DataTypes.STRING, field: "permit_doing" },
+      permitDone: { type: DataTypes.STRING, field: "permit_done" },
+      permitCreate: { type: DataTypes.STRING, field: "permit_create" },
     },
     {
       sequelize,

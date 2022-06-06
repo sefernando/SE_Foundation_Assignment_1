@@ -34,6 +34,6 @@ app.listen(PORT, async () => {
   // await sequelize.sync({ force: true });
   // await Application.sync({ force: true });
   // await Plan.sync({ force: true });
-  await Task.sync({ force: true });
+  // await Task.sync({ force: true });
   console.log("app listen at port 5000");
 });

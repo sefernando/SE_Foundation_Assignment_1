@@ -10,22 +10,22 @@ module.exports = (sequelize, DataTypes) => {
     static associate({ Task }) {
       // define association here
       this.hasMany(Task, {
-        foreignKey: "Task_plan",
+        foreignKey: "task_plan",
       });
     }
   }
   Plan.init(
     {
-      planMVPName: {
+      mvpName: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
         autoIncrement: false,
         primaryKey: true,
-        field: "Plan_MVP_name",
+        field: "mvp_name",
       },
-      planStartDate: { type: DataTypes.DATEONLY, field: "Plan_startDate" },
-      planEndDate: { type: DataTypes.DATEONLY, field: "Plan_endDate" },
+      startDate: { type: DataTypes.DATEONLY, field: "startDate" },
+      endDate: { type: DataTypes.DATEONLY, field: "endDate" },
     },
     {
       sequelize,
