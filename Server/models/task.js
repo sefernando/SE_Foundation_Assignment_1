@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
         field: "owner",
       },
       createDate: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATEONLY,
         field: "createDate",
       },
     },

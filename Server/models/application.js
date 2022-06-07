@@ -32,10 +32,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(4096),
         field: "description",
       },
-      rNumber: { type: DataTypes.INTEGER, field: "rNumber" },
+      rNumber: {
+        type: DataTypes.INTEGER,
+        field: "rNumber",
+        unique: true,
+        allowNull: false,
+        autoIncrement: true,
+      },
       startDate: { type: DataTypes.DATEONLY, field: "startDate" },
       endDate: { type: DataTypes.DATEONLY, field: "endDate" },
 
+      permitCreate: { type: DataTypes.STRING, field: "permit_create" },
       permitOpen: { type: DataTypes.STRING, field: "permit_open" },
       permitToDoList: {
         type: DataTypes.STRING,
@@ -43,7 +50,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       permitDoing: { type: DataTypes.STRING, field: "permit_doing" },
       permitDone: { type: DataTypes.STRING, field: "permit_done" },
-      permitCreate: { type: DataTypes.STRING, field: "permit_create" },
     },
     {
       sequelize,

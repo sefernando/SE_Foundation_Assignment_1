@@ -143,6 +143,15 @@ async function signIn(req, res) {
   //checking if the user is admin
   const isAdmin = await checkGroup(user.userName, "admin");
 
+  //checking if the user is lead
+  const isLead = await checkGroup(user.userName, "lead");
+
+  //checking if the user is admin
+  const isPM = await checkGroup(user.userName, "manager");
+
+  //checking if the user is a team member
+  const isTeamMember = await checkGroup(user.userName, "team_member");
+
   //creating and sending jwt token
   const payLoad = {
     userName: user.userName,
@@ -164,6 +173,9 @@ async function signIn(req, res) {
         email: user.email,
         active: user.isActive,
         isAdmin: isAdmin,
+        isLead: isLead,
+        isPM: isPM,
+        isTeamMember: isTeamMember,
         groups: user.Groups.map((group) => group.groupName),
       });
     }
