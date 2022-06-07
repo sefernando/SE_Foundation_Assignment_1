@@ -14,7 +14,8 @@ import CreateGroup from "./pages/CreateGroup";
 import CreateUser from "./pages/CreateUser";
 import ChangePassword from "./pages/ChangePassword";
 import ChangeEmail from "./pages/ChangeEmail";
-import Apps from "./pages/Apps";
+import Applications from "./pages/Applications";
+import CreateNewApp from "./pages/CreateNewApp";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -39,8 +40,6 @@ function App() {
           element={auth.isAuthorized ? <CreateGroup /> : <HOME />}
         />
 
-        <Route path="/apps" element={auth.isAuthorized ? <Apps /> : <HOME />} />
-
         <Route
           path="/editUser/:userName"
           element={auth.isAuthorized ? <EditUser /> : <HOME />}
@@ -54,6 +53,15 @@ function App() {
         <Route
           path="/changePassword"
           element={auth.isAuthorized ? <ChangePassword /> : <HOME />}
+        />
+        <Route
+          path="/applications"
+          element={auth.isAuthorized ? <Applications /> : <HOME />}
+        />
+
+        <Route
+          path="/applications/new"
+          element={auth.isAuthorized ? <CreateNewApp /> : <HOME />}
         />
 
         <Route path="*" element={<ErrorPage />} />

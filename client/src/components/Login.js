@@ -28,21 +28,6 @@ const Login = () => {
     setErrMsg("");
   }, [userName, password]);
 
-  //checking if user is admin
-  // async function checkAdmin(userName, groupName) {
-  //   try {
-  //     const response = await axios.get(CHECK_GROUP, {
-  //       params: { userName, groupName },
-  //     });
-  //     console.log("admin");
-
-  //     setIsAdmin(true);
-  //   } catch (error) {
-  //     console.log("not admin");
-  //     setIsAdmin(false);
-  //   }
-  // }
-
   //handle submit function
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,7 +42,16 @@ const Login = () => {
         }
       );
 
-      const { token, groups, active, email, isAdmin } = response?.data;
+      const {
+        token,
+        groups,
+        active,
+        email,
+        isAdmin,
+        isLead,
+        isPM,
+        isTeamMember,
+      } = response?.data;
 
       if (active) {
         setAuth({
@@ -67,6 +61,9 @@ const Login = () => {
           groups,
           isAuthorized: true,
           isAdmin,
+          isLead,
+          isPM,
+          isTeamMember,
         });
       } else {
         alert("Your account is disabled. Please contact system admin");
@@ -75,7 +72,7 @@ const Login = () => {
       console.log("printing auth", auth.isAuthorized);
       setUserName("");
       setPassword("");
-      navigate("/apps");
+      navigate("/applications");
     } catch (error) {
       if (!error.response) {
         setErrMsg("No server response");
