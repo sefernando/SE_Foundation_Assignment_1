@@ -27,8 +27,6 @@ async function getAllApps(req, res) {
 //////////////////////////////////////////////////////////////
 //create application -------------------------------------
 async function createApp(req, res) {
-  let app;
-
   const {
     isLead,
     acronym,
@@ -64,16 +62,16 @@ async function createApp(req, res) {
 
   //saving app to the database
   try {
-    app = await Application.create(appObj);
+    const app = await Application.create(appObj);
+    return res.status(200).json({ app });
   } catch (error) {
     if (error.name == "SequelizeUniqueConstraintError") {
-      return res.status(400).json({ msg: "app acronym already exist" });
+      return res.status(500).json({ msg: "app acronym already exist" });
     } else {
       return res.status(500).json({ msg: "server error" });
     }
   }
-
-  res.status(200).json({ app });
+  // res.status(200).json({ app });
 }
 
 //////////////////////////////////////////////////////////////

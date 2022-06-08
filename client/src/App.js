@@ -17,6 +17,7 @@ import ChangeEmail from "./pages/ChangeEmail";
 import Applications from "./pages/Applications";
 import CreateNewApp from "./pages/CreateNewApp";
 import EditApp from "./pages/EditApp";
+import AddPlan from "./pages/AddPlan";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -68,6 +69,11 @@ function App() {
         <Route
           path="/applications/edit/:acronym"
           element={auth.isAuthorized ? <EditApp /> : <HOME />}
+        />
+
+        <Route
+          path="/plan/create/:acronym"
+          element={auth.isAuthorized ? <AddPlan /> : <HOME />}
         />
 
         <Route path="*" element={<ErrorPage />} />

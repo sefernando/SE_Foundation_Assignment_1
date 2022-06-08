@@ -50,16 +50,25 @@ const CreateNewApp = () => {
     !permitDone;
 
   //fetching all apps
-  useEffect(() => {
-    (async function () {
-      try {
-        const response = await axios.get(GET_ALL_APPS_URL);
-        setApps(response.data.apps);
-      } catch (error) {
-        console.log("get all apps error");
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async function () {
+  //     try {
+  //       const response = await axios.get(GET_ALL_APPS_URL);
+  //       setApps(response.data.apps);
+  //     } catch (error) {
+  //       console.log("get all apps error");
+  //     }
+  //   })();
+  // }, []);
+  async function fetchingApps() {
+    try {
+      const response = await axios.get(GET_ALL_APPS_URL);
+      setApps(response.data.apps);
+    } catch (error) {
+      console.log("get all apps error");
+    }
+  }
+  fetchingApps();
 
   //fetching all groups
   useEffect(() => {
@@ -134,7 +143,7 @@ const CreateNewApp = () => {
   }
 
   //submit form
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     const appData = {
@@ -151,12 +160,15 @@ const CreateNewApp = () => {
     };
 
     try {
-      axios.post(CREATE_APP_URL, appData, {
+      const response = await axios.post(CREATE_APP_URL, appData, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
 
+      console.log("status", response);
+
       alert("successfully created the app");
+      fetchingApps();
       clearInputs();
     } catch (error) {
       alert("error occured while creating the app");
@@ -205,7 +217,7 @@ const CreateNewApp = () => {
             <Form.Label>Start Date</Form.Label>
             <Form.Control
               type="date"
-              // value={startDate}
+              value={startDate}
               placeholder=""
               onChange={(e) => setStartDate(e.target.value)}
             />
@@ -217,7 +229,7 @@ const CreateNewApp = () => {
             <Form.Control
               type="date"
               placeholder=""
-              // value={endDate}
+              value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
             />
             {!validEndDate &&

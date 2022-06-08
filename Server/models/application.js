@@ -35,9 +35,8 @@ module.exports = (sequelize, DataTypes) => {
       rNumber: {
         type: DataTypes.INTEGER,
         field: "rNumber",
-        unique: true,
         allowNull: false,
-        autoIncrement: true,
+        defaultValue: 0,
       },
       startDate: { type: DataTypes.DATEONLY, field: "startDate" },
       endDate: { type: DataTypes.DATEONLY, field: "endDate" },

@@ -54,25 +54,17 @@ const DisplayApplications = () => {
                     <Button variant="outline-primary">View Progress</Button>
                   </Col>
                   <Col>
-                    <Button variant="outline-primary">Add Plan</Button>
+                    <Link to={`/plan/create/${app.acronym}`}>
+                      <Button variant="outline-primary">Add Plan</Button>
+                    </Link>
                   </Col>
                   <Col>
                     <Button variant="outline-primary">Add Task</Button>
                   </Col>
                   <Col>
-                    <Button variant="outline-primary">
-                      <Link to={`/applications/edit/${app.acronym}`}>
-                        Edit App
-                      </Link>
-                    </Button>
-                  </Col>
-                  <Col>
-                    {/* <Link
-                      variant="pills"
-                      to={`/applications/edit/${app.acronym}`}
-                    >
-                      Edit App
-                    </Link> */}
+                    <Link to={`/applications/edit/${app.acronym}`}>
+                      <Button variant="outline-primary">Edit App</Button>
+                    </Link>
                   </Col>
                 </Row>
               </Card.Body>

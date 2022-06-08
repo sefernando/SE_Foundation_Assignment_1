@@ -10,6 +10,7 @@ const authRoute = require("./routes/authRoute");
 const userRoute = require("./routes/userRoute");
 const groupRoute = require("./routes/groupRoute");
 const appRoute = require("./routes/appRoute");
+const planRoute = require("./routes/planRoute");
 
 const { sequelize, User, Group, Application, Plan, Task } = require("./models");
 
@@ -29,6 +30,7 @@ app.use("/auth", authRoute);
 app.use("/user", userRoute);
 app.use("/group", groupRoute);
 app.use("/app", appRoute);
+app.use("/plan", planRoute);
 
 //server
 app.listen(PORT, async () => {
