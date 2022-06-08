@@ -20,7 +20,7 @@ async function createGroup(req, res) {
 }
 
 //////////////////////////////////////////////////////////////
-//ge all groups function -------------------------------------
+//get all groups function -------------------------------------
 async function getAllGroups(req, res) {
   try {
     const allGroups = await Group.findAll({ attributes: ["groupName"] });

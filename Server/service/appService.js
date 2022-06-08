@@ -1,6 +1,19 @@
 const { Application } = require("../models");
 
 //////////////////////////////////////////////////////////////
+//get app by acronym -------------------------------------
+async function getApp(req, res) {
+  try {
+    const acronym = req.params.acronym;
+
+    const app = await Application.findByPk(acronym);
+    return res.status(200).json({ app });
+  } catch (error) {
+    return res.status(500).json({ msg: "server error" });
+  }
+}
+
+//////////////////////////////////////////////////////////////
 //get all application -------------------------------------
 async function getAllApps(req, res) {
   try {
@@ -30,7 +43,7 @@ async function createApp(req, res) {
   } = req.body;
 
   const appObj = {
-    isLead,
+    // isLead,
     acronym,
     description,
     startDate,
@@ -63,4 +76,57 @@ async function createApp(req, res) {
   res.status(200).json({ app });
 }
 
-module.exports = { createApp, getAllApps };
+//////////////////////////////////////////////////////////////
+//edit application -------------------------------------
+async function editApp(req, res) {
+  const { acronym } = req.params;
+
+  const {
+    isLead,
+    description,
+    startDate,
+    endDate,
+    permitCreate,
+    permitOpen,
+    permitToDoList,
+    permitDoing,
+    permitDone,
+  } = req.body;
+
+  const appUpdateObj = {
+    description,
+    startDate,
+    endDate,
+    permitCreate,
+    permitOpen,
+    permitToDoList,
+    permitDoing,
+    permitDone,
+  };
+
+  console.log("data", appUpdateObj);
+
+  //checking if the user is a lead
+  if (!isLead) {
+    return res
+      .status(400)
+      .json({ msg: "not authorized to create an application" });
+  }
+
+  //updating application date
+  try {
+    const updatedApp = await Application.update(appUpdateObj, {
+      where: { acronym },
+    });
+
+    if (updatedApp[0] === 0) {
+      res.status(400).json({ error: "App not found" });
+    } else {
+      res.status(200).json({ msg: "Application updated successfully" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+}
+
+module.exports = { createApp, getAllApps, editApp, getApp };

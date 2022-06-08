@@ -1,24 +1,24 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import axios from "../api/axios";
 
 import AuthContext from "../context/AuthProvider";
 
-const GET_ALL_APPS_URL = "app/all";
+// const GET_ALL_APPS_URL = "app/all";
+const GET_APP_URL = "app/";
 const GET_ALL_GROUPS = "group/getAllGroups";
-const CREATE_APP_URL = "app/createApp";
+const EDIT_APP_URL = "app/editApp/";
 
-const CreateNewApp = () => {
+const EditApp = () => {
+  const { acronym } = useParams();
+  const navigate = useNavigate();
+
   const sDate = new Date().toISOString().slice(0, 10);
   const eDate = new Date().toISOString().slice(0, 10);
   const today = new Date().toISOString().slice(0, 10);
 
   const { auth, setAuth } = useContext(AuthContext);
-
-  const acronymRef = useRef();
-
-  const [acronym, setAcronym] = useState("");
-  const [validAcronym, setValidAcronym] = useState(false);
 
   const [description, setDescription] = useState("");
 
@@ -34,12 +34,13 @@ const CreateNewApp = () => {
   const [permitDoing, setPermitDoing] = useState("");
   const [permitDone, setPermitDone] = useState("");
 
-  const [apps, setApps] = useState([]);
   const [groups, setGroups] = useState([]);
 
+  const [app, setApp] = useState("");
+
   const buttonStatus =
-    !acronym ||
-    !validAcronym ||
+    // !acronym ||
+    // !validAcronym ||
     !description ||
     !validStartDate ||
     !validEndDate ||
@@ -49,14 +50,24 @@ const CreateNewApp = () => {
     !permitDoing ||
     !permitDone;
 
-  //fetching all apps
+  // fetching the app
   useEffect(() => {
     (async function () {
       try {
-        const response = await axios.get(GET_ALL_APPS_URL);
-        setApps(response.data.apps);
+        const response = await axios.get(`${GET_APP_URL}${acronym}`);
+        const appData = response.data.app;
+        console.log("app", response.data.app);
+        setApp(appData);
+        setDescription(appData.description);
+        setStartDate(appData.startDate);
+        setEndDate(appData.endDate);
+        setPermitCreate(appData.permitCreate);
+        setPermitOpen(appData.permitOpen);
+        setPermitToDoList(appData.permitToDoList);
+        setPermitDoing(appData.permitDoing);
+        setPermitDone(appData.permitDone);
       } catch (error) {
-        console.log("get all apps error");
+        console.log("get app error");
       }
     })();
   }, []);
@@ -72,17 +83,6 @@ const CreateNewApp = () => {
       }
     })();
   }, []);
-
-  //checking if acronym is valid
-  useEffect(() => {
-    const existingAcronyms = apps.map((app) => app.acronym);
-
-    if (existingAcronyms.includes(acronym)) {
-      setValidAcronym(false);
-    } else {
-      setValidAcronym(true);
-    }
-  }, [acronym]);
 
   //check if start date is valid
   useEffect(() => {
@@ -122,7 +122,7 @@ const CreateNewApp = () => {
 
   //clear inputs
   function clearInputs() {
-    setAcronym("");
+    // setAcronym("");
     setDescription("");
     setStartDate(sDate);
     setEndDate(eDate);
@@ -139,7 +139,6 @@ const CreateNewApp = () => {
 
     const appData = {
       isLead: auth.isLead,
-      acronym,
       description,
       startDate,
       endDate,
@@ -151,22 +150,23 @@ const CreateNewApp = () => {
     };
 
     try {
-      axios.post(CREATE_APP_URL, appData, {
+      axios.put(`${EDIT_APP_URL}${acronym}`, appData, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
 
-      alert("successfully created the app");
+      alert("successfully Updated the app");
       clearInputs();
+      navigate("/applications");
     } catch (error) {
-      alert("error occured while creating the app");
+      alert("error occured while updating the app");
     }
   }
 
   return (
     <>
       <br />
-      <div>CreateNewApp</div>
+      <div>Edit App</div>
       <hr /> <br />
       <Form onSubmit={handleSubmit}>
         <Form.Group as={Row} className="mb-3" controlId="AppAcronym">
@@ -175,13 +175,11 @@ const CreateNewApp = () => {
           </Form.Label>
 
           <Col sm="10">
-            {acronym && !validAcronym && getErr("Acronym is not available")}
             <Form.Control
+              disabled
               type="text"
               placeholder="Enter App Acronym"
-              ref={acronymRef}
               value={acronym}
-              onChange={(e) => setAcronym(e.target.value)}
             />
           </Col>
         </Form.Group>
@@ -205,7 +203,7 @@ const CreateNewApp = () => {
             <Form.Label>Start Date</Form.Label>
             <Form.Control
               type="date"
-              // value={startDate}
+              value={startDate}
               placeholder=""
               onChange={(e) => setStartDate(e.target.value)}
             />
@@ -217,7 +215,7 @@ const CreateNewApp = () => {
             <Form.Control
               type="date"
               placeholder=""
-              // value={endDate}
+              value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
             />
             {!validEndDate &&
@@ -232,7 +230,6 @@ const CreateNewApp = () => {
               value={permitCreate}
               onChange={(e) => setPermitCreate(e.target.value)}
             >
-              <option value={""} key="empty"></option>
               {setOptions()}
             </Form.Select>
           </Form.Group>
@@ -242,7 +239,6 @@ const CreateNewApp = () => {
               value={permitOpen}
               onChange={(e) => setPermitOpen(e.target.value)}
             >
-              <option value={""} key="empty"></option>
               {setOptions()}
             </Form.Select>
           </Form.Group>
@@ -253,7 +249,6 @@ const CreateNewApp = () => {
               value={permitToDoList}
               onChange={(e) => setPermitToDoList(e.target.value)}
             >
-              <option value={""} key="empty"></option>
               {setOptions()}
             </Form.Select>
           </Form.Group>
@@ -264,7 +259,6 @@ const CreateNewApp = () => {
               value={permitDoing}
               onChange={(e) => setPermitDoing(e.target.value)}
             >
-              <option value={""} key="empty"></option>
               {setOptions()}
             </Form.Select>
           </Form.Group>
@@ -275,7 +269,6 @@ const CreateNewApp = () => {
               value={permitDone}
               onChange={(e) => setPermitDone(e.target.value)}
             >
-              <option value={""} key="empty"></option>
               {setOptions()}
             </Form.Select>
           </Form.Group>
@@ -289,4 +282,4 @@ const CreateNewApp = () => {
   );
 };
 
-export default CreateNewApp;
+export default EditApp;

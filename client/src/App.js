@@ -16,6 +16,7 @@ import ChangePassword from "./pages/ChangePassword";
 import ChangeEmail from "./pages/ChangeEmail";
 import Applications from "./pages/Applications";
 import CreateNewApp from "./pages/CreateNewApp";
+import EditApp from "./pages/EditApp";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -64,37 +65,15 @@ function App() {
           element={auth.isAuthorized ? <CreateNewApp /> : <HOME />}
         />
 
+        <Route
+          path="/applications/edit/:acronym"
+          element={auth.isAuthorized ? <EditApp /> : <HOME />}
+        />
+
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </Router>
     //-----------------------------------------------------------
-
-    // <Router>
-    //   <nav>
-    //     <Link to="/">Home | </Link>
-    //     <Link to="/UserManagement"> User Management | </Link>
-    //     {auth.groups?.includes("admin") && <Link to="/admin">Admin</Link>}
-    //   </nav>
-
-    //   <hr />
-    //   <br />
-
-    //   <Routes>
-    //     <Route path="/" element={<HOME />} />
-
-    //     <Route
-    //       path="/UserManagement"
-    //       element={auth.isAuthorized ? <UserManagement /> : <HOME />}
-    //     />
-
-    //     <Route
-    //       path="/admin"
-    //       element={auth.isAuthorized ? <Admin /> : <HOME />}
-    //     />
-
-    //     <Route path="*" element={<ErrorPage />} />
-    //   </Routes>
-    // </Router>
   );
 }
 
