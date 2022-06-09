@@ -28,12 +28,16 @@ module.exports = (sequelize, DataTypes) => {
       notes: {
         type: DataTypes.TEXT,
         field: "notes",
-        get() {
-          return this.getDataValue("notes").split(";");
-        },
-        set(val) {
-          this.setDataValue("notes", val.join(";"));
-        },
+        defaultValue: "",
+        // get() {
+        //   return this.getDataValue("notes")
+        //     .split("-")
+        //     .map((x) => x.split(";"));
+        //   // return this.getDataValue("notes").split(";");
+        // },
+        // set(val) {
+        //   this.setDataValue("notes", val.join(";"));
+        // },
       },
       id: {
         type: DataTypes.STRING,

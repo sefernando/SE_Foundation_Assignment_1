@@ -49,17 +49,6 @@ const CreateNewApp = () => {
     !permitDoing ||
     !permitDone;
 
-  //fetching all apps
-  // useEffect(() => {
-  //   (async function () {
-  //     try {
-  //       const response = await axios.get(GET_ALL_APPS_URL);
-  //       setApps(response.data.apps);
-  //     } catch (error) {
-  //       console.log("get all apps error");
-  //     }
-  //   })();
-  // }, []);
   async function fetchingApps() {
     try {
       const response = await axios.get(GET_ALL_APPS_URL);

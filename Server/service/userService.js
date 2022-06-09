@@ -111,13 +111,6 @@ async function changeEmail(req, res) {
 async function changeAccStatus(req, res) {
   const { userName, isActive } = req.body;
 
-  // const isAdmin = groups.includes("admin");
-
-  // if (!isAdmin) {
-  //   res.status(401).json({ error: "Unauthorized" });
-  // }
-  console.log("username", userName);
-
   const user = await User.update(
     { isActive: isActive },
     { where: { userName } }
